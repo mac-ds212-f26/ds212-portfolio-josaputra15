@@ -33,6 +33,37 @@ Carryout the following steps to clean and save the San Francisco Weather data.  
 
 
 ```{r}
+library(tidyverse)
+weather <- read_csv("~/Documents/GitHub/ds212-portfolio-josaputra15/ica/data/raw/weather.csv")
+```
+
+
+
+```{r}
+weather_clean <- weather %>%
+    mutate(PrecipYr = na_if(PrecipYr, 99999))
+weather_clean
+
+```
+```{r}
+weather_clean <- weather_clean |> 
+    arrange(Month, Day)
+weather_clean
+
 
 ```
 
+```{r}
+weather_clean <- weather_clean |>
+mutate(dateInYear = 1:365)
+
+weather_clean
+```
+
+
+
+```{r}
+weather_clean <- weather_clean |>
+  
+
+```
