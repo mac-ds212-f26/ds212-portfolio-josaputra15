@@ -18,6 +18,7 @@ In this assignment, I explored simple body measurements from the **Many Penguins
 **Research Question:** Do penguins with longer legs also have longer wings, and which penguin genus has the longest wings overall?
 
 ## Data Loading
+
 ```{r}
 library(tidyverse)
 
@@ -25,9 +26,10 @@ library(tidyverse)
 penguins <- read_csv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/main/data/2026/2026-07-14/many_penguins.csv")
 ```
 
-
 ## Plot 1: Leg Length vs. Wing Length
+
 We use a scatterplot (geom_point) to check if leg length (tarsus.length) is related to wing length (wing.length).
+
 ```{r}
 
 ggplot(penguins, aes(x = tarsus.length, y = wing.length)) +
@@ -41,7 +43,9 @@ ggplot(penguins, aes(x = tarsus.length, y = wing.length)) +
   ) +
   theme_minimal()
 ```
+
 ## Plot 2: Wing Length by Genus
+
 We use a boxplot (geom_boxplot) to compare wing lengths across different penguin genera.
 
 ```{r}
@@ -58,8 +62,9 @@ ggplot(penguins, aes(x = genus, y = wing.length, fill = genus)) +
 
 
 ```
+
 ## Main Takeaways
+
 **Positive Trend:** Leg length and wing length show a straightforward positive relationship—larger body frames mean longer limbs.
 
 **Genus Variation:** Aptenodytes penguins stand out with noticeably larger average wing measurements than all other genera.
-  
