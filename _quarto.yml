@@ -66,6 +66,7 @@ book:
 
     - part: "TidyTuesday"
       chapters:
+      - tt/hw1-Cappuccino Index -Joseph-Saputra.qmd
       - tt/hw1-many-penguin.qmd
       - tt/2025-07-08.qmd
       - tt/2025-07-15.qmd
