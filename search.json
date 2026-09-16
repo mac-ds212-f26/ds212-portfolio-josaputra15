@@ -21,6 +21,61 @@
     ]
   },
   {
+    "objectID": "tt/hw1-Cappuccino Index -Joseph-Saputra.html",
+    "href": "tt/hw1-Cappuccino Index -Joseph-Saputra.html",
+    "title": "Homework 1: TidyTuesday - Cappuccino Index Analysis",
+    "section": "",
+    "text": "Background & Research Question\nIn this assignment, I explored James Hoffmann’s Cappuccino Index dataset to see how long a barista must work to buy a small cappuccino.\nResearch Question: Which countries have the most affordable cappuccino relative to barista wages, and is there a direct relationship between barista wages and cappuccino prices?",
+    "crumbs": [
+      "TidyTuesday",
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Homework 1: TidyTuesday - Cappuccino Index Analysis</span>"
+    ]
+  },
+  {
+    "objectID": "tt/hw1-Cappuccino Index -Joseph-Saputra.html#data-loading-cleaning",
+    "href": "tt/hw1-Cappuccino Index -Joseph-Saputra.html#data-loading-cleaning",
+    "title": "Homework 1: TidyTuesday - Cappuccino Index Analysis",
+    "section": "Data Loading & Cleaning",
+    "text": "Data Loading & Cleaning\nFirst of all, let us load and read the data as well as wrangling it together\n\nCodelibrary(tidyverse)\n\n# Load datasets\ncafe &lt;- read_csv(\"https://raw.githubusercontent.com/rfordatascience/tidytuesday/main/data/2026/2026-09-08/cafe.csv\")\ncappuccino_index &lt;- read_csv(\"https://raw.githubusercontent.com/rfordatascience/tidytuesday/main/data/2026/2026-09-08/cappuccino_index.csv\")\n\n# Clean non-breaking spaces in country names ( I was experimenting on how to do it )\ncafe$country &lt;- gsub(\"\\u00a0\", \" \", cafe$country)\ncappuccino_index$country &lt;- gsub(\"\\u00a0\", \" \", cappuccino_index$country)",
+    "crumbs": [
+      "TidyTuesday",
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Homework 1: TidyTuesday - Cappuccino Index Analysis</span>"
+    ]
+  },
+  {
+    "objectID": "tt/hw1-Cappuccino Index -Joseph-Saputra.html#plot-1-most-affordable-countries-for-baristas",
+    "href": "tt/hw1-Cappuccino Index -Joseph-Saputra.html#plot-1-most-affordable-countries-for-baristas",
+    "title": "Homework 1: TidyTuesday - Cappuccino Index Analysis",
+    "section": "Plot 1: Most Affordable Countries for Baristas",
+    "text": "Plot 1: Most Affordable Countries for Baristas\nI use a geom_col to look at the top 10 countries where baristas need to work the fewest minutes to afford a cappuccino (filtering for countries with at least 3 cafes sampled).\n\nCodetop_affordable &lt;- cappuccino_index %&gt;%\n  filter(n &gt;= 3) %&gt;%\n  slice_min(index, n = 10)\n\nggplot(top_affordable, aes(x = reorder(country, index), y = index)) +\n  geom_col(fill = \"brown\", alpha = 0.85) +\n  coord_flip() +\n  labs(\n    title = \"Where Can Baristas Afford Coffee the Fastest?\",\n    subtitle = \"Minutes of work required to buy one small cappuccino (Countries with &gt; 3 cafes)\",\n    x = \"Country\",\n    y = \"Work Time Required (Minutes)\",\n    caption = \"Source: TidyTuesday Cappuccino Index\"\n  ) +\n  theme_minimal()",
+    "crumbs": [
+      "TidyTuesday",
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Homework 1: TidyTuesday - Cappuccino Index Analysis</span>"
+    ]
+  },
+  {
+    "objectID": "tt/hw1-Cappuccino Index -Joseph-Saputra.html#plot-2-barista-wage-vs.-cappuccino-price",
+    "href": "tt/hw1-Cappuccino Index -Joseph-Saputra.html#plot-2-barista-wage-vs.-cappuccino-price",
+    "title": "Homework 1: TidyTuesday - Cappuccino Index Analysis",
+    "section": "Plot 2: Barista Wage vs. Cappuccino Price",
+    "text": "Plot 2: Barista Wage vs. Cappuccino Price\nThen I use geom_point to test if higher hourly wages mean higher coffee prices in cafes worldwide.\n\nCodeggplot(cafe, aes(x = hourly_wage_gbp, y = price_gbp)) +\n  geom_point(color = \"green\", alpha = 0.6, size = 2.5) +\n  geom_smooth(method = \"lm\", se = FALSE, color = \"darkgreen\") +\n  labs(\n    title = \"Barista Hourly Wage vs. Cappuccino Price\",\n    subtitle = \"Linear regression line confirms higher wages correspond with higher cappuccino prices\",\n    x = \"Hourly Wage (£)\",\n    y = \"Cappuccino Price (£)\",\n    caption = \"Source: TidyTuesday Cappuccino Index\"\n  ) +\n  theme_minimal()",
+    "crumbs": [
+      "TidyTuesday",
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Homework 1: TidyTuesday - Cappuccino Index Analysis</span>"
+    ]
+  },
+  {
+    "objectID": "tt/hw1-Cappuccino Index -Joseph-Saputra.html#conclusion",
+    "href": "tt/hw1-Cappuccino Index -Joseph-Saputra.html#conclusion",
+    "title": "Homework 1: TidyTuesday - Cappuccino Index Analysis",
+    "section": "Conclusion",
+    "text": "Conclusion\n\n\nAffordability Differences: Baristas in countries with higher minimum wages only need to work a few minutes to afford a cappuccino.\n\nPositive Relationship: As expected, cafes paying higher hourly wages in £ also tend to charge more for a cappuccino in GBP.\n\nRegression Trend Line: The linear regression line displays a clear upward slope, confirming a positive overall correlation between barista pay and drink prices across global cafes.",
+    "crumbs": [
+      "TidyTuesday",
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Homework 1: TidyTuesday - Cappuccino Index Analysis</span>"
+    ]
+  },
+  {
     "objectID": "tt/hw1-many-penguin.html",
     "href": "tt/hw1-many-penguin.html",
     "title": "Homework 1: TidyTuesday - Many Penguins Analysis",
@@ -28,7 +83,7 @@
     "text": "Background & Research Question\nIn this assignment, I explored simple body measurements from the Many Penguins dataset (AVONET database) https://opentraits.org/datasets/avonet.html data source.\nResearch Question: Do penguins with longer legs also have longer wings, and which penguin genus has the longest wings overall?",
     "crumbs": [
       "TidyTuesday",
-      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Homework 1: TidyTuesday - Many Penguins Analysis</span>"
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Homework 1: TidyTuesday - Many Penguins Analysis</span>"
     ]
   },
   {
@@ -39,7 +94,7 @@
     "text": "Data Loading\n\nCodelibrary(tidyverse)\n\n# Load dataset directly from GitHub\npenguins &lt;- read_csv(\"https://raw.githubusercontent.com/rfordatascience/tidytuesday/main/data/2026/2026-07-14/many_penguins.csv\")",
     "crumbs": [
       "TidyTuesday",
-      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Homework 1: TidyTuesday - Many Penguins Analysis</span>"
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Homework 1: TidyTuesday - Many Penguins Analysis</span>"
     ]
   },
   {
@@ -50,7 +105,7 @@
     "text": "Plot 1: Leg Length vs. Wing Length\nWe use a scatterplot (geom_point) to check if leg length (tarsus.length) is related to wing length (wing.length).\n\nCodeggplot(penguins, aes(x = tarsus.length, y = wing.length)) +\n  geom_point(color = \"red\", size = 2.5, alpha = 0.8) +\n  labs(\n    title = \"Penguin Leg Length vs. Wing Length\",\n    subtitle = \"Penguins with longer legs generally have longer wings\",\n    x = \"Tarsus (Leg) Length (mm)\",\n    y = \"Wing Length (mm)\",\n    caption = \"Source data taken from: AVONET\"\n  ) +\n  theme_minimal()",
     "crumbs": [
       "TidyTuesday",
-      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Homework 1: TidyTuesday - Many Penguins Analysis</span>"
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Homework 1: TidyTuesday - Many Penguins Analysis</span>"
     ]
   },
   {
@@ -61,7 +116,7 @@
     "text": "Plot 2: Wing Length by Genus\nWe use a boxplot (geom_boxplot) to compare wing lengths across different penguin genera.\n\nCodeggplot(penguins, aes(x = genus, y = wing.length, fill = genus)) +\n  geom_boxplot(alpha = 0.7, show.legend = FALSE) +\n  labs(\n    title = \"Wing Length Distribution Across Penguin Genera\",\n    subtitle = \"Aptenodytes penguins have the longest wings of any genus\",\n    x = \"Penguin Genus\",\n    y = \"Wing Length (mm)\",\n    caption = \"Source data taken from: AVONET\"\n  ) +\n  theme_minimal()",
     "crumbs": [
       "TidyTuesday",
-      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Homework 1: TidyTuesday - Many Penguins Analysis</span>"
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Homework 1: TidyTuesday - Many Penguins Analysis</span>"
     ]
   },
   {
@@ -72,7 +127,7 @@
     "text": "Main Takeaways\nPositive Trend: Leg length and wing length show a straightforward positive relationship—larger body frames mean longer limbs.\nGenus Variation: Aptenodytes penguins stand out with noticeably larger average wing measurements than all other genera.",
     "crumbs": [
       "TidyTuesday",
-      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Homework 1: TidyTuesday - Many Penguins Analysis</span>"
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Homework 1: TidyTuesday - Many Penguins Analysis</span>"
     ]
   },
   {
@@ -83,7 +138,7 @@
     "text": "Add content here",
     "crumbs": [
       "TidyTuesday",
-      "<span class='chapter-number'>4</span>  <span class='chapter-title'>TidyTuesday Sample 1</span>"
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>TidyTuesday Sample 1</span>"
     ]
   },
   {
@@ -94,7 +149,7 @@
     "text": "Add content here",
     "crumbs": [
       "TidyTuesday",
-      "<span class='chapter-number'>5</span>  <span class='chapter-title'>TidyTuesday Sample 2</span>"
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>TidyTuesday Sample 2</span>"
     ]
   },
   {
@@ -105,7 +160,7 @@
     "text": "R",
     "crumbs": [
       "Pre-Class Learnings",
-      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Pre-Class Learning Summaries</span>"
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Pre-Class Learning Summaries</span>"
     ]
   },
   {
@@ -116,7 +171,7 @@
     "text": "Quarto\n\n\n\nfrom qmd4sci.njtierney.com",
     "crumbs": [
       "Pre-Class Learnings",
-      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Pre-Class Learning Summaries</span>"
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Pre-Class Learning Summaries</span>"
     ]
   },
   {
@@ -127,7 +182,7 @@
     "text": "Add content here",
     "crumbs": [
       "In-Class Activities",
-      "<span class='chapter-number'>7</span>  <span class='chapter-title'>ICA Sample 1</span>"
+      "<span class='chapter-number'>8</span>  <span class='chapter-title'>ICA Sample 1</span>"
     ]
   },
   {
@@ -138,7 +193,7 @@
     "text": "Add content here",
     "crumbs": [
       "In-Class Activities",
-      "<span class='chapter-number'>8</span>  <span class='chapter-title'>ICA Sample 2</span>"
+      "<span class='chapter-number'>9</span>  <span class='chapter-title'>ICA Sample 2</span>"
     ]
   },
   {
@@ -149,7 +204,7 @@
     "text": "Add content here",
     "crumbs": [
       "Extras",
-      "<span class='chapter-number'>9</span>  <span class='chapter-title'>Extra Sample 1</span>"
+      "<span class='chapter-number'>10</span>  <span class='chapter-title'>Extra Sample 1</span>"
     ]
   },
   {
@@ -160,7 +215,7 @@
     "text": "Add content here",
     "crumbs": [
       "Extras",
-      "<span class='chapter-number'>10</span>  <span class='chapter-title'>Extra Sample 2</span>"
+      "<span class='chapter-number'>11</span>  <span class='chapter-title'>Extra Sample 2</span>"
     ]
   }
 ]
