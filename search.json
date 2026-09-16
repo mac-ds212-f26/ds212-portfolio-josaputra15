@@ -21,6 +21,61 @@
     ]
   },
   {
+    "objectID": "tt/hw1-many-penguin.html",
+    "href": "tt/hw1-many-penguin.html",
+    "title": "Homework 1: TidyTuesday - Many Penguins Analysis",
+    "section": "",
+    "text": "Background & Research Question\nIn this assignment, I explored simple body measurements from the Many Penguins dataset (AVONET database) https://opentraits.org/datasets/avonet.html data source.\nResearch Question: Do penguins with longer legs also have longer wings, and which penguin genus has the longest wings overall?",
+    "crumbs": [
+      "TidyTuesday",
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Homework 1: TidyTuesday - Many Penguins Analysis</span>"
+    ]
+  },
+  {
+    "objectID": "tt/hw1-many-penguin.html#data-loading",
+    "href": "tt/hw1-many-penguin.html#data-loading",
+    "title": "Homework 1: TidyTuesday - Many Penguins Analysis",
+    "section": "Data Loading",
+    "text": "Data Loading\n\nCodelibrary(tidyverse)\n\n# Load dataset directly from GitHub\npenguins &lt;- read_csv(\"https://raw.githubusercontent.com/rfordatascience/tidytuesday/main/data/2026/2026-07-14/many_penguins.csv\")",
+    "crumbs": [
+      "TidyTuesday",
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Homework 1: TidyTuesday - Many Penguins Analysis</span>"
+    ]
+  },
+  {
+    "objectID": "tt/hw1-many-penguin.html#plot-1-leg-length-vs.-wing-length",
+    "href": "tt/hw1-many-penguin.html#plot-1-leg-length-vs.-wing-length",
+    "title": "Homework 1: TidyTuesday - Many Penguins Analysis",
+    "section": "Plot 1: Leg Length vs. Wing Length",
+    "text": "Plot 1: Leg Length vs. Wing Length\nWe use a scatterplot (geom_point) to check if leg length (tarsus.length) is related to wing length (wing.length).\n\nCodeggplot(penguins, aes(x = tarsus.length, y = wing.length)) +\n  geom_point(color = \"red\", size = 2.5, alpha = 0.8) +\n  labs(\n    title = \"Penguin Leg Length vs. Wing Length\",\n    subtitle = \"Penguins with longer legs generally have longer wings\",\n    x = \"Tarsus (Leg) Length (mm)\",\n    y = \"Wing Length (mm)\",\n    caption = \"Source data taken from: AVONET\"\n  ) +\n  theme_minimal()",
+    "crumbs": [
+      "TidyTuesday",
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Homework 1: TidyTuesday - Many Penguins Analysis</span>"
+    ]
+  },
+  {
+    "objectID": "tt/hw1-many-penguin.html#plot-2-wing-length-by-genus",
+    "href": "tt/hw1-many-penguin.html#plot-2-wing-length-by-genus",
+    "title": "Homework 1: TidyTuesday - Many Penguins Analysis",
+    "section": "Plot 2: Wing Length by Genus",
+    "text": "Plot 2: Wing Length by Genus\nWe use a boxplot (geom_boxplot) to compare wing lengths across different penguin genera.\n\nCodeggplot(penguins, aes(x = genus, y = wing.length, fill = genus)) +\n  geom_boxplot(alpha = 0.7, show.legend = FALSE) +\n  labs(\n    title = \"Wing Length Distribution Across Penguin Genera\",\n    subtitle = \"Aptenodytes penguins have the longest wings of any genus\",\n    x = \"Penguin Genus\",\n    y = \"Wing Length (mm)\",\n    caption = \"Source data taken from: AVONET\"\n  ) +\n  theme_minimal()",
+    "crumbs": [
+      "TidyTuesday",
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Homework 1: TidyTuesday - Many Penguins Analysis</span>"
+    ]
+  },
+  {
+    "objectID": "tt/hw1-many-penguin.html#main-takeaways",
+    "href": "tt/hw1-many-penguin.html#main-takeaways",
+    "title": "Homework 1: TidyTuesday - Many Penguins Analysis",
+    "section": "Main Takeaways",
+    "text": "Main Takeaways\nPositive Trend: Leg length and wing length show a straightforward positive relationship—larger body frames mean longer limbs.\nGenus Variation: Aptenodytes penguins stand out with noticeably larger average wing measurements than all other genera.",
+    "crumbs": [
+      "TidyTuesday",
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Homework 1: TidyTuesday - Many Penguins Analysis</span>"
+    ]
+  },
+  {
     "objectID": "tt/2025-07-08.html",
     "href": "tt/2025-07-08.html",
     "title": "TidyTuesday Sample 1",
@@ -28,7 +83,7 @@
     "text": "Add content here",
     "crumbs": [
       "TidyTuesday",
-      "<span class='chapter-number'>3</span>  <span class='chapter-title'>TidyTuesday Sample 1</span>"
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>TidyTuesday Sample 1</span>"
     ]
   },
   {
@@ -39,7 +94,7 @@
     "text": "Add content here",
     "crumbs": [
       "TidyTuesday",
-      "<span class='chapter-number'>4</span>  <span class='chapter-title'>TidyTuesday Sample 2</span>"
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>TidyTuesday Sample 2</span>"
     ]
   },
   {
@@ -50,7 +105,7 @@
     "text": "R",
     "crumbs": [
       "Pre-Class Learnings",
-      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Pre-Class Learning Summaries</span>"
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Pre-Class Learning Summaries</span>"
     ]
   },
   {
@@ -61,7 +116,7 @@
     "text": "Quarto\n\n\n\nfrom qmd4sci.njtierney.com",
     "crumbs": [
       "Pre-Class Learnings",
-      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Pre-Class Learning Summaries</span>"
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Pre-Class Learning Summaries</span>"
     ]
   },
   {
@@ -72,7 +127,7 @@
     "text": "Add content here",
     "crumbs": [
       "In-Class Activities",
-      "<span class='chapter-number'>6</span>  <span class='chapter-title'>ICA Sample 1</span>"
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>ICA Sample 1</span>"
     ]
   },
   {
@@ -83,7 +138,7 @@
     "text": "Add content here",
     "crumbs": [
       "In-Class Activities",
-      "<span class='chapter-number'>7</span>  <span class='chapter-title'>ICA Sample 2</span>"
+      "<span class='chapter-number'>8</span>  <span class='chapter-title'>ICA Sample 2</span>"
     ]
   },
   {
@@ -94,7 +149,7 @@
     "text": "Add content here",
     "crumbs": [
       "Extras",
-      "<span class='chapter-number'>8</span>  <span class='chapter-title'>Extra Sample 1</span>"
+      "<span class='chapter-number'>9</span>  <span class='chapter-title'>Extra Sample 1</span>"
     ]
   },
   {
@@ -105,7 +160,7 @@
     "text": "Add content here",
     "crumbs": [
       "Extras",
-      "<span class='chapter-number'>9</span>  <span class='chapter-title'>Extra Sample 2</span>"
+      "<span class='chapter-number'>10</span>  <span class='chapter-title'>Extra Sample 2</span>"
     ]
   }
 ]
