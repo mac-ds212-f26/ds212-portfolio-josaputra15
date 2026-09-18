@@ -22,7 +22,7 @@ number-depth: 2
 
 book:
   title: "COMP/STAT212 Portfolio"
-  author: "Your Name Here"
+  author: "Joseph Saputra"
   date: today  # use today to update date published based on last time project was edited
   date-format: full
   # favicon: path/to/favorite-logo.png
@@ -45,7 +45,7 @@ book:
       # footer text
 
   sidebar:
-    title: "Your Name Here"
+    title: "Joseph Saputra"
     logo: assets/sidebar-logo.png
     logo-alt: "Random negative space illustration"
     collapse-level: 2
@@ -66,6 +66,8 @@ book:
 
     - part: "TidyTuesday"
       chapters:
+      - tt/hw1-Cappuccino Index -Joseph-Saputra.qmd
+      - tt/hw1-many-penguin.qmd
       - tt/2025-07-08.qmd
       - tt/2025-07-15.qmd
 
