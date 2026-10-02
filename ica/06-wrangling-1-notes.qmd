@@ -213,6 +213,7 @@ Load the diamonds dataset, and filter to the first 1000 diamonds.
 data(diamonds)
 diamonds <- diamonds |> 
     slice_head(n = 1000)
+
 ```
 
 Using `tidyverse` functions, complete the following:
