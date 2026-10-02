@@ -1,0 +1,76 @@
+---
+title: "Homework 1: TidyTuesday - Cappuccino Index Analysis"
+author: "Joseph Saputra"
+date: "2026-09-15"
+format: html
+editor: visual
+---
+
+## Background & Research Question
+
+In this assignment, I explored James Hoffmann's Cappuccino Index dataset to see how long a barista must work to buy a small cappuccino.
+
+**Research Question:** Which countries have the most affordable cappuccino relative to barista wages, and is there a direct relationship between barista wages and cappuccino prices?
+
+## Data Loading & Cleaning
+
+First of all, let us load and read the data as well as wrangling it together
+
+```{r}
+library(tidyverse)
+
+# Load datasets
+cafe <- read_csv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/main/data/2026/2026-09-08/cafe.csv")
+cappuccino_index <- read_csv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/main/data/2026/2026-09-08/cappuccino_index.csv")
+
+# Clean non-breaking spaces in country names ( I was experimenting on how to do it )
+cafe$country <- gsub("\u00a0", " ", cafe$country)
+cappuccino_index$country <- gsub("\u00a0", " ", cappuccino_index$country)
+```
+
+## Plot 1: Most Affordable Countries for Baristas
+
+I use a geom_col to look at the top 10 countries where baristas need to work the fewest minutes to afford a cappuccino (filtering for countries with at least 3 cafes sampled).
+
+```{r}
+top_affordable <- cappuccino_index %>%
+  filter(n >= 3) %>%
+  slice_min(index, n = 10)
+
+ggplot(top_affordable, aes(x = reorder(country, index), y = index)) +
+  geom_col(fill = "brown", alpha = 0.85) +
+  coord_flip() +
+  labs(
+    title = "Where Can Baristas Afford Coffee the Fastest?",
+    subtitle = "Minutes of work required to buy one small cappuccino (Countries with > 3 cafes)",
+    x = "Country",
+    y = "Work Time Required (Minutes)",
+    caption = "Source: TidyTuesday Cappuccino Index"
+  ) +
+  theme_minimal()
+
+```
+
+## Plot 2: Barista Wage vs. Cappuccino Price
+
+Then I use geom_point to test if higher hourly wages mean higher coffee prices in cafes worldwide.
+
+```{r}
+ggplot(cafe, aes(x = hourly_wage_gbp, y = price_gbp)) +
+  geom_point(color = "green", alpha = 0.6, size = 2.5) +
+  geom_smooth(method = "lm", se = FALSE, color = "darkgreen") +
+  labs(
+    title = "Barista Hourly Wage vs. Cappuccino Price",
+    subtitle = "Linear regression line confirms higher wages correspond with higher cappuccino prices",
+    x = "Hourly Wage (£)",
+    y = "Cappuccino Price (£)",
+    caption = "Source: TidyTuesday Cappuccino Index"
+  ) +
+  theme_minimal()
+```
+
+## Conclusion
+
+- **Affordability Differences:** Baristas in countries with higher minimum wages only need to work a few minutes to afford a cappuccino.
+- **Positive Relationship:** As expected, cafes paying higher hourly wages in £ also tend to charge more for a cappuccino in GBP.
+- **Regression Trend Line:** The linear regression line displays a clear upward slope, confirming a positive overall correlation between barista pay and drink prices across global cafes.
