@@ -217,7 +217,7 @@ st_crs(mn_counties)
 
 ```{r}
 # Option 1
-install.packages("ggthemes")
+# install.packages("ggthemes")
 library(ggplot2)
 library(ggthemes)
 
