@@ -77,6 +77,7 @@ Or you can create one based on available data using
 
 ```{r}
 library(tidyverse)
+library(lubridate)
 ```
 
 ```{r create_vec_examples}
@@ -232,18 +233,51 @@ Using `tidyverse` functions, complete the following:
 
 ```{r}
 #1
-
+diamonds |>
+  filter(price < 400 | price > 10000)
 
 #2
-
+diamonds |>
+  filter(price >= 500 |price <= 600)
 
 #3
+# wrong way
+diamonds |>
+  summarize(
+    total = sum(cut == c("Fair", "Premium", "Ideal")),
+    fraction = mean(cut == c("Fair", "Premium", "Ideal"))
+  )
 
+# Correct way
+diamonds |>
+  summarize(
+    total = sum(cut %in% c("Fair", "Premium", "Ideal")),
+    fraction = mean(cut %in% c("Fair", "Premium", "Ideal"))
+  )
 
 #4
+diamonds |>
+  filter(cut == "Fair") |>
+  summarize(any_over_3000 = any(price > 3000))
 
+diamonds |>
+  filter(cut == "Ideal") |>
+  summarize(all_over_2000 = all(price > 2000))
 
 #5
+diamonds <- diamonds |>
+  mutate(
+    price_cat1 = if_else(price < 500, "low", "high"),
+    price_cat2 = case_when(
+      price < 500 ~ "low",
+      price >= 500 & price <= 1000 ~ "medium",
+      TRUE ~ "high"
+    )
+  )
+
+diamonds |>
+  select(price, price_cat1, price_cat2) |>
+  head()
 
 ```
 
@@ -516,6 +550,13 @@ gss_cat |>
 
 ```{r}
 ratings <- c("High", "Medium", "Low")
+ratings_fct <- factor(
+  ratings,
+  levels = c("Low", "Medium", "High")
+)
+
+ratings_fct
+sort(ratings_fct)
 ```
 
 
