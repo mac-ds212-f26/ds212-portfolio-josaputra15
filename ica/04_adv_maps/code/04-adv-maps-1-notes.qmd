@@ -350,23 +350,37 @@ Below we show how to make the MN counties map in the `leaflet` package.
 ```{r leaflet}
 library(leaflet)
 
-mn_counties_leaf <- mn_counties |> st_transform(4326) # Leaflet expects this CRS for vectors
-mn_cities_leaf <- mn_cities |> st_transform(4326)
+mn_counties_leaf <- mn_counties |>
+  st_transform(4326) |>
+  select(county_name = name) |>
+  filter(county_name %in% c(
+    "Anoka", "Hennepin", "Ramsey", "Dakota",
+    "Carver", "Washington", "Scott"
+  ))
+
+mn_cities_leaf <- mn_cities |>
+  st_transform(4326) |>
+  st_filter(mn_counties_leaf)
 
 cities_per_county <- st_join(mn_cities_leaf, mn_counties_leaf) |>
-    st_drop_geometry() |> # removes geometry - makes the following calculation more efficient
-    count(name) 
+  st_drop_geometry() |>
+  count(county_name)
 
-mn_counties_leaf |> 
-    filter(name %in% c("Anoka", "Hennepin", "Ramsey", "Dakota", "Carver", "Washington", "Scott")) |>
-    left_join(cities_per_county) |>
-    leaflet() |> 
-    addProviderTiles("CartoDB.Positron") |> 
-    addPolygons(
-        color = "#444444", weight = 1, smoothFactor = 0.5, opacity = 1.0,
-        fillOpacity = 0.5, fillColor = ~colorQuantile("YlOrRd", n)(n),
-        highlightOptions = highlightOptions(color = "white", weight = 2, bringToFront = TRUE)) |>
-    addCircles(data = mn_cities_leaf |> filter(County %in% paste(c("Anoka", "Hennepin", "Ramsey", "Dakota", "Carver", "Washington", "Scott"), "County")), color = "#444444")
+mn_counties_leaf |>
+  left_join(cities_per_county, by = "county_name") |>
+  mutate(n = replace_na(n, 0)) |>
+  leaflet() |>
+  addProviderTiles("CartoDB.Positron") |>
+  addPolygons(
+    color = "#444444",
+    weight = 1,
+    fillOpacity = 0.5,
+    fillColor = ~colorQuantile("YlOrRd", n)(n)
+  ) |>
+  addCircles(
+    data = mn_cities_leaf,
+    color = "#444444"
+  )
 ```
 
 
