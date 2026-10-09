@@ -38,10 +38,10 @@ First load required packages.
 
 #Install these packages first
 
-install.packages(c("sf","elevatr","terra","stars","tidycensus"))
-install.packages('devtools')
-devtools::install_github("ropensci/USAboundaries")
-install.packages("USAboundariesData", repos = "https://ropensci.r-universe.dev", type = "source")
+# install.packages(c("sf","elevatr","terra","stars","tidycensus"))
+# install.packages('devtools')
+# devtools::install_github("ropensci/USAboundaries")
+# install.packages("USAboundariesData", repos = "https://ropensci.r-universe.dev", type = "source")
 
 loadNamespace("USAboundariesData")
 
