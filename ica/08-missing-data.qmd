@@ -323,7 +323,7 @@ pg <- ggplot(airquality_mod, aes(x = Solar.R_mod2, y = Ozone)) +
 (bp / dp / pg) + plot_annotation(title = "Alternate Situation 2")
 ```
 
-
+> In the actual data, the missing ozone cases have solar radiation values within the range of the recorded cases. In Situation 1, the missing cases are mostly at the higher end of that range, so there are fewer nearby examples to help predict ozone. In Situation 2, some missing cases are outside the recorded range. Predicting beyond the data we have is called extrapolation, and it makes the predictions less reliable.
 
 ### ✏️ Investigate Ozone Missingness
 
@@ -335,8 +335,39 @@ Does it look like a linear regression model (perhaps with variable transformatio
 
 ```{r}
 
-```
+# Is ozone missing more often in certain months?
+ggplot(airquality, aes(x = Month, fill = IsOzoneNA)) +
+  geom_bar(position = "fill") +
+  labs(y = "Proportion", fill = "Ozone missing?")
 
+# Is wind different when ozone is missing?
+ggplot(airquality, aes(x = IsOzoneNA, y = Wind)) +
+  geom_boxplot() +
+  labs(x = "Ozone missing?")
+
+
+# Is temperature different when ozone is missing?
+ggplot(airquality, aes(x = IsOzoneNA, y = Temp)) +
+  geom_boxplot() +
+  labs(x = "Ozone missing?")
+
+# Does the amount of ozone differ by month?
+ggplot(airquality, aes(x = Month, y = Ozone)) +
+  geom_boxplot()
+
+
+# Does ozone change with wind?
+ggplot(airquality, aes(x = Wind, y = Ozone)) +
+  geom_point() +
+  geom_smooth(method = "lm")
+
+
+#Does ozone change with temperature?
+ggplot(airquality, aes(x = Temp, y = Ozone)) +
+  geom_point() +
+  geom_smooth(method = "lm")
+```
+> Ozone is missing much more often in June. Wind and temperature look fairly similar between cases with and without missing ozone. For the recorded cases, ozone generally decreases as wind increases and increases as temperature rises. Ozone also differs by month. A regression model using these variables could help predict missing ozone, although a straight line may not capture every pattern. These plots do not tell us the exact reason the data are missing.
 
 ## Regression Imputation
 
