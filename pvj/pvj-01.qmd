@@ -3,3 +3,87 @@ title: "Personal Visualization Journey"
 ---
 
 Add content here
+
+
+
+# Viz 1
+
+```{r}
+#| fig-width: 11
+#| fig-height: 6
+#| fig-alt: "A line graph shows simulated workout session durations from September 1 to October 25, 2026. Five colored lines represent push, pull, shoulders, legs, and cardio. Points mark individual sessions. Leg sessions last longest, while cardio duration varies most."
+
+library(tidyverse)
+
+# Load the detailed dataset
+workout_details <- read_csv("workout_details.csv")
+
+workout_details$date <- as.Date(workout_details$date)
+
+# Put tennis in the Cardio category
+workout_details$workout[
+  workout_details$exercise == "Tennis"
+] <- "Cardio"
+
+# Keep one row per session
+workouts <- workout_details %>%
+  distinct(date, workout, session_duration_min)
+
+# Create one graph with five lines
+line_plot <- ggplot(
+  workouts,
+  aes(
+    x = date,
+    y = session_duration_min,
+    color = workout,
+    group = workout
+  )
+) +
+  geom_line(linewidth = 1) +
+  geom_point(
+    aes(shape = workout),
+    size = 3
+  ) +
+  scale_color_manual(
+    values = c(
+      "Push" = "#D55E00",
+      "Pull" = "#0072B2",
+      "Shoulders" = "#007A5E",
+      "Legs" = "#444444",
+      "Cardio" = "#882255"
+    )
+  ) +
+  scale_x_date(
+    date_breaks = "1 week",
+    date_labels = "%b %d"
+  ) +
+  scale_y_continuous(
+    limits = c(40, 80),
+    breaks = seq(40, 80, 10)
+  ) +
+  labs(
+    title = "How long were my workout sessions?",
+    subtitle = "Workout Log | September 1–October 25, 2026",
+    x = "Session date",
+    y = "Session duration (minutes)",
+    color = "Workout type",
+    shape = "Workout type",
+    caption = paste(
+      "Joseph Saputra | October 25, 2026",
+      "Source: Workout App Tracker",
+      "Points mark sessions; lines connect sessions of the same type.",
+      sep = "\n"
+    )
+  ) +
+  theme_minimal(base_size = 14) +
+  theme(
+    legend.position = "bottom",
+    panel.grid.minor = element_blank(),
+    plot.title = element_text(face = "bold"),
+    plot.caption = element_text(hjust = 0, size = 10)
+  )
+
+line_plot
+```
+
+
