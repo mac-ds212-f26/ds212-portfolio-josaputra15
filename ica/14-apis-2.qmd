@@ -63,6 +63,30 @@ key      value
 `for`      `state:*`
 
 
+
+
+
+
+
+```{r}
+census_api_key <- readLines("/Users/josephsaputra/Documents/GitHub/ds212-portfolio-josaputra15/ica/data/raw/censusapikey.txt")
+```
+
+
+```{r}
+req <- request("https://api.census.gov") |>
+    req_url_path_append("data") |>
+    req_url_path_append("2019") |>
+    req_url_path_append("acs") |>
+    req_url_path_append("acs1") |>
+    req_url_query(
+        get = c("NAME", "B02015_009E", "B02015_009M"), 
+        `for` = I("state:*"), 
+        key = census_api_key, 
+        .multi = "comma"
+    )
+```
+
 ### Examples
 
 A large variety of web APIs provide data. Almost all reasonably large commercial websites offer Web APIs. Todd Motto has compiled an expansive list of [Public Web APIs](https://github.com/toddmotto/public-apis) on GitHub.
