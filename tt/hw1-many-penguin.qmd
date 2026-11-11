@@ -1,0 +1,70 @@
+---
+title: "Homework 1: TidyTuesday - Many Penguins Analysis"
+author: "Joseph Saputra"
+date: "2026-09-15"
+format: html
+editor: visual
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+library(tidyverse)
+```
+
+## Background & Research Question
+
+In this assignment, I explored simple body measurements from the **Many Penguins** dataset (AVONET database) [https://opentraits.org/datasets/avonet.html data source](https://opentraits.org/datasets/avonet.html).
+
+**Research Question:** Do penguins with longer legs also have longer wings, and which penguin genus has the longest wings overall?
+
+## Data Loading
+
+```{r}
+library(tidyverse)
+
+# Load dataset directly from GitHub
+penguins <- read_csv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/main/data/2026/2026-07-14/many_penguins.csv")
+```
+
+## Plot 1: Leg Length vs. Wing Length
+
+We use a scatterplot (geom_point) to check if leg length (tarsus.length) is related to wing length (wing.length).
+
+```{r}
+
+ggplot(penguins, aes(x = tarsus.length, y = wing.length)) +
+  geom_point(color = "red", size = 2.5, alpha = 0.8) +
+  labs(
+    title = "Penguin Leg Length vs. Wing Length",
+    subtitle = "Penguins with longer legs generally have longer wings",
+    x = "Tarsus (Leg) Length (mm)",
+    y = "Wing Length (mm)",
+    caption = "Source data taken from: AVONET"
+  ) +
+  theme_minimal()
+```
+
+## Plot 2: Wing Length by Genus
+
+We use a boxplot (geom_boxplot) to compare wing lengths across different penguin genera.
+
+```{r}
+ggplot(penguins, aes(x = genus, y = wing.length, fill = genus)) +
+  geom_boxplot(alpha = 0.7, show.legend = FALSE) +
+  labs(
+    title = "Wing Length Distribution Across Penguin Genera",
+    subtitle = "Aptenodytes penguins have the longest wings of any genus",
+    x = "Penguin Genus",
+    y = "Wing Length (mm)",
+    caption = "Source data taken from: AVONET"
+  ) +
+  theme_minimal() 
+
+
+```
+
+## Main Takeaways
+
+**Positive Trend:** Leg length and wing length show a straightforward positive relationship—larger body frames mean longer limbs.
+
+**Genus Variation:** Aptenodytes penguins stand out with noticeably larger average wing measurements than all other genera.
