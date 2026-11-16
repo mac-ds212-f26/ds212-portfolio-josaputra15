@@ -40,6 +40,10 @@ line_plot <- ggplot(
   )
 ) +
   geom_line(linewidth = 1) +
+  geom_point(
+    aes(shape = workout),
+    size = 3
+  ) +
   scale_color_manual(
     values = c(
       "Push" = "#D55E00",
@@ -58,22 +62,19 @@ line_plot <- ggplot(
     breaks = seq(40, 80, 10)
   ) +
   labs(
-  title = "Leg workouts lasted longest; cardio varied most",
-  subtitle = paste(
-    "Total workout duration by session date and workout type.",
-    "September 1–October 25, 2026 | Cardio sessions are tennis.",
-    sep = "\n"
-  ),
-  x = "Workout date",
-  y = "Total session duration (minutes)",
-  color = "Workout type",
-  caption = paste(
-    "Joseph Saputra | September–October 2026",
-    "Source: Simulated workout log.",
-    "Lines connect recorded sessions of the same type; workouts were not recorded every day.",
-    sep = "\n"
-  )
-) +
+    title = "How long were my workout sessions?",
+    subtitle = "Workout Log | September 1–October 25, 2026",
+    x = "Session date",
+    y = "Session duration (minutes)",
+    color = "Workout type",
+    shape = "Workout type",
+    caption = paste(
+      "Joseph Saputra | October 25, 2026",
+      "Source: Workout App Tracker",
+      "Points mark sessions; lines connect sessions of the same type.",
+      sep = "\n"
+    )
+  ) +
   theme_minimal(base_size = 14) +
   theme(
     legend.position = "bottom",
@@ -133,10 +134,6 @@ ggplot(
   )
 ) +
   geom_line(linewidth = 1) +
-  geom_point(
-    aes(shape = workout),
-    size = 3
-  ) +
   scale_color_manual(
     values = c(
       "Push" = "#D55E00",
@@ -160,25 +157,23 @@ ggplot(
     limits = c(40, 80),
     breaks = seq(40, 80, 10)
   ) +
-  labs(
-    title = "Leg workouts lasted longest; cardio varied most",
-    subtitle = paste(
-      "Each point represents the total duration of one workout session.",
-      "September 1–October 25, 2026 | Cardio sessions are tennis.",
-      sep = "\n"
-    ),
-    x = "Workout date",
-    y = "Total session duration (minutes)",
-    color = "Workout type",
-    shape = "Workout type",
-    caption = paste(
-      "Joseph Saputra | September–October 2026",
-      "Source: Simulated workout log.",
-      "Lines connect recorded sessions of the same type; gaps do not represent daily workouts.",
-      sep = "\n",
-      ""
-    )
-  ) +
+ labs(
+  title = "Leg workouts lasted longest; cardio varied most",
+  subtitle = paste(
+    "Total workout duration by session date and workout type.",
+    "September 1–October 25, 2026 | Cardio sessions are tennis.",
+    sep = "\n"
+  ),
+  x = "Workout date",
+  y = "Total session duration (minutes)",
+  color = "Workout type",
+  caption = paste(
+    "Joseph Saputra | September–October 2026",
+    "Source: Workout App Tracker",
+    "Lines connect recorded sessions of the same type; workouts were not recorded every day.",
+    sep = "\n"
+  )
+) +
   theme_minimal(base_size = 14) +
   theme(
     legend.position = "bottom",
@@ -201,5 +196,162 @@ ggplot(
   )
 
 ```
-
 The main pattern is a difference between workout types. In this simulated log, leg workouts lasted longest, at around 70 minutes, although only three leg sessions were recorded. Cardio had the largest variation in duration, while push, pull, and shoulder sessions stayed relatively consistent. There was no clear overall increase or decrease from September to October. This suggests that session duration differed more by workout type than by time during this period.
+
+
+
+
+
+
+
+
+
+
+# PVJ Final
+
+```{r}
+#| fig-width: 11
+#| fig-height: 6.5
+#| fig-alt: "A line graph of simulated workout durations from September 1 to October 25, 2026. Five colors and line patterns distinguish workout types. Small vertical marks indicate recorded sessions. Leg workouts last longest, around 70 minutes, while cardio durations vary most."
+
+library(tidyverse)
+
+# Load the data
+workout_details <- read_csv("workout_details.csv")
+
+workout_details$date <- as.Date(workout_details$date)
+
+# Put tennis in the Cardio category
+workout_details$workout[
+  workout_details$exercise == "Tennis"
+] <- "Cardio"
+
+# Keep one row per workout session
+workouts <- workout_details %>%
+  distinct(date, workout, session_duration_min)
+
+ggplot(
+  workouts,
+  aes(
+    x = date,
+    y = session_duration_min,
+    color = workout,
+    linetype = workout,
+    group = workout
+  )
+) +
+  geom_line(linewidth = 0.9) +
+
+  # Small vertical marks show recorded sessions without dots
+  geom_point(
+    shape = 124,
+    size = 3,
+    show.legend = FALSE
+  ) +
+
+  scale_color_manual(
+    values = c(
+      "Push" = "#D55E00",
+      "Pull" = "#0072B2",
+      "Shoulders" = "#007A5E",
+      "Legs" = "#444444",
+      "Cardio" = "#882255"
+    )
+  ) +
+
+  # Different line patterns help readers distinguish workout types
+  scale_linetype_manual(
+    values = c(
+      "Push" = "longdash",
+      "Pull" = "dashed",
+      "Shoulders" = "twodash",
+      "Legs" = "solid",
+      "Cardio" = "dotdash"
+    )
+  ) +
+
+  # Label dates every seven days, starting September 1
+  scale_x_date(
+    breaks = seq(
+      as.Date("2026-09-01"),
+      as.Date("2026-10-25"),
+      by = "7 days"
+    ),
+    date_labels = "%b %d"
+  ) +
+
+  scale_y_continuous(
+    limits = c(40, 80),
+    breaks = seq(40, 80, 10)
+  ) +
+
+  labs(
+    title = "Workout Session Duration by Type Over Time",
+    subtitle = paste(
+      "September 1–October 25, 2026 | Cardio = tennis",
+      "Vertical marks show recorded sessions; lines connect sessions of the same type.",
+      sep = "\n"
+    ),
+    x = "Workout date",
+    y = "Session duration (minutes)",
+    color = "Workout type",
+    linetype = "Workout type",
+    caption = paste(
+      "Joseph Saputra | September–October 2026",
+      "Source: Joseph's workout log (simulated data).",
+      "Connecting lines do not indicate workouts on the days between recorded sessions.",
+      sep = "\n"
+    )
+  ) +
+
+  theme_classic(base_size = 13) +
+
+  theme(
+    # Light horizontal gridlines help compare durations
+    panel.grid.major.y = element_line(
+      color = "gray90",
+      linewidth = 0.4
+    ),
+
+    plot.title = element_text(
+      face = "bold",
+      size = 17,
+      color = "gray15"
+    ),
+
+    plot.subtitle = element_text(
+      size = 11,
+      color = "gray35",
+      lineheight = 1.2,
+      margin = margin(b = 15)
+    ),
+
+    axis.text = element_text(
+      color = "gray30"
+    ),
+
+    axis.title.x = element_text(
+      margin = margin(t = 10)
+    ),
+
+    axis.title.y = element_text(
+      margin = margin(r = 10)
+    ),
+
+    legend.position = "bottom",
+    legend.key.width = grid::unit(1.4, "cm"),
+    legend.text = element_text(size = 11),
+    legend.title = element_text(size = 11),
+
+    plot.caption = element_text(
+      color = "gray45",
+      hjust = 0,
+      size = 10,
+      lineheight = 1.2,
+      margin = margin(t = 12)
+    ),
+
+    plot.margin = margin(15, 20, 15, 15)
+  )
+```
+In this simulated workout log, leg sessions lasted longest, at around 68–72 minutes, although only three sessions were recorded. Cardio varied most, ranging from about 45 to 60 minutes, while push, pull, and shoulder sessions remained relatively consistent. The different line patterns make these comparisons easier to follow, and vertical marks identify individual recorded sessions. Overall, there was no clear upward or downward trend from September to October; the clearest pattern was the difference in duration between workout types.
