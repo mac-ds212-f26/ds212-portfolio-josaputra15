@@ -478,6 +478,7 @@ cookieconsent.run({
    
   <ul>
 <li><a href="#viz-1" id="toc-viz-1" class="nav-link active" data-scroll-target="#viz-1">Viz 1</a></li>
+  <li><a href="#pvj-final" id="toc-pvj-final" class="nav-link" data-scroll-target="#pvj-final">PVJ Final</a></li>
   </ul></nav>
     </div>
 <!-- main -->
@@ -577,6 +578,254 @@ cookieconsent.run({
 </div>
 </div>
 </div>
+<div class="cell">
+<details class="code-fold"><summary>Code</summary><div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a><span class="co">#| fig-width: 11</span></span>
+<span id="cb2-2"><a href="#cb2-2"></a><span class="co">#| fig-height: 6.5</span></span>
+<span id="cb2-3"><a href="#cb2-3"></a><span class="co">#| fig-alt: "A line graph of simulated workout durations from September 1 to October 25, 2026. Leg workouts last around 70 minutes. Cardio varies most, between approximately 45 and 60 minutes. Other workout types remain relatively stable, with no clear overall upward or downward trend."</span></span>
+<span id="cb2-4"><a href="#cb2-4"></a></span>
+<span id="cb2-5"><a href="#cb2-5"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb2-6"><a href="#cb2-6"></a></span>
+<span id="cb2-7"><a href="#cb2-7"></a><span class="co"># Load the data</span></span>
+<span id="cb2-8"><a href="#cb2-8"></a>workout_details <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"workout_details.csv"</span>)</span>
+<span id="cb2-9"><a href="#cb2-9"></a></span>
+<span id="cb2-10"><a href="#cb2-10"></a>workout_details<span class="sc">$</span>date <span class="ot">&lt;-</span> <span class="fu">as.Date</span>(workout_details<span class="sc">$</span>date)</span>
+<span id="cb2-11"><a href="#cb2-11"></a></span>
+<span id="cb2-12"><a href="#cb2-12"></a><span class="co"># Put tennis in the Cardio category</span></span>
+<span id="cb2-13"><a href="#cb2-13"></a>workout_details<span class="sc">$</span>workout[</span>
+<span id="cb2-14"><a href="#cb2-14"></a>  workout_details<span class="sc">$</span>exercise <span class="sc">==</span> <span class="st">"Tennis"</span></span>
+<span id="cb2-15"><a href="#cb2-15"></a>] <span class="ot">&lt;-</span> <span class="st">"Cardio"</span></span>
+<span id="cb2-16"><a href="#cb2-16"></a></span>
+<span id="cb2-17"><a href="#cb2-17"></a><span class="co"># Keep one row per workout session</span></span>
+<span id="cb2-18"><a href="#cb2-18"></a>workouts <span class="ot">&lt;-</span> workout_details <span class="sc">%&gt;%</span></span>
+<span id="cb2-19"><a href="#cb2-19"></a>  <span class="fu">distinct</span>(date, workout, session_duration_min)</span>
+<span id="cb2-20"><a href="#cb2-20"></a></span>
+<span id="cb2-21"><a href="#cb2-21"></a><span class="fu">ggplot</span>(</span>
+<span id="cb2-22"><a href="#cb2-22"></a>  workouts,</span>
+<span id="cb2-23"><a href="#cb2-23"></a>  <span class="fu">aes</span>(</span>
+<span id="cb2-24"><a href="#cb2-24"></a>    <span class="at">x =</span> date,</span>
+<span id="cb2-25"><a href="#cb2-25"></a>    <span class="at">y =</span> session_duration_min,</span>
+<span id="cb2-26"><a href="#cb2-26"></a>    <span class="at">color =</span> workout,</span>
+<span id="cb2-27"><a href="#cb2-27"></a>    <span class="at">group =</span> workout</span>
+<span id="cb2-28"><a href="#cb2-28"></a>  )</span>
+<span id="cb2-29"><a href="#cb2-29"></a>) <span class="sc">+</span></span>
+<span id="cb2-30"><a href="#cb2-30"></a>  <span class="fu">geom_line</span>(<span class="at">linewidth =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb2-31"><a href="#cb2-31"></a>  <span class="fu">scale_color_manual</span>(</span>
+<span id="cb2-32"><a href="#cb2-32"></a>    <span class="at">values =</span> <span class="fu">c</span>(</span>
+<span id="cb2-33"><a href="#cb2-33"></a>      <span class="st">"Push"</span> <span class="ot">=</span> <span class="st">"#D55E00"</span>,</span>
+<span id="cb2-34"><a href="#cb2-34"></a>      <span class="st">"Pull"</span> <span class="ot">=</span> <span class="st">"#0072B2"</span>,</span>
+<span id="cb2-35"><a href="#cb2-35"></a>      <span class="st">"Shoulders"</span> <span class="ot">=</span> <span class="st">"#007A5E"</span>,</span>
+<span id="cb2-36"><a href="#cb2-36"></a>      <span class="st">"Legs"</span> <span class="ot">=</span> <span class="st">"#444444"</span>,</span>
+<span id="cb2-37"><a href="#cb2-37"></a>      <span class="st">"Cardio"</span> <span class="ot">=</span> <span class="st">"#882255"</span></span>
+<span id="cb2-38"><a href="#cb2-38"></a>    )</span>
+<span id="cb2-39"><a href="#cb2-39"></a>  ) <span class="sc">+</span></span>
+<span id="cb2-40"><a href="#cb2-40"></a>  <span class="fu">scale_x_date</span>(</span>
+<span id="cb2-41"><a href="#cb2-41"></a>    <span class="at">breaks =</span> <span class="fu">as.Date</span>(<span class="fu">c</span>(</span>
+<span id="cb2-42"><a href="#cb2-42"></a>      <span class="st">"2026-09-01"</span>,</span>
+<span id="cb2-43"><a href="#cb2-43"></a>      <span class="st">"2026-09-15"</span>,</span>
+<span id="cb2-44"><a href="#cb2-44"></a>      <span class="st">"2026-09-29"</span>,</span>
+<span id="cb2-45"><a href="#cb2-45"></a>      <span class="st">"2026-10-13"</span>,</span>
+<span id="cb2-46"><a href="#cb2-46"></a>      <span class="st">"2026-10-25"</span></span>
+<span id="cb2-47"><a href="#cb2-47"></a>    )),</span>
+<span id="cb2-48"><a href="#cb2-48"></a>    <span class="at">date_labels =</span> <span class="st">"%b %d"</span></span>
+<span id="cb2-49"><a href="#cb2-49"></a>  ) <span class="sc">+</span></span>
+<span id="cb2-50"><a href="#cb2-50"></a>  <span class="fu">scale_y_continuous</span>(</span>
+<span id="cb2-51"><a href="#cb2-51"></a>    <span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">40</span>, <span class="dv">80</span>),</span>
+<span id="cb2-52"><a href="#cb2-52"></a>    <span class="at">breaks =</span> <span class="fu">seq</span>(<span class="dv">40</span>, <span class="dv">80</span>, <span class="dv">10</span>)</span>
+<span id="cb2-53"><a href="#cb2-53"></a>  ) <span class="sc">+</span></span>
+<span id="cb2-54"><a href="#cb2-54"></a> <span class="fu">labs</span>(</span>
+<span id="cb2-55"><a href="#cb2-55"></a>  <span class="at">title =</span> <span class="st">"Leg workouts lasted longest; cardio varied most"</span>,</span>
+<span id="cb2-56"><a href="#cb2-56"></a>  <span class="at">subtitle =</span> <span class="fu">paste</span>(</span>
+<span id="cb2-57"><a href="#cb2-57"></a>    <span class="st">"Total workout duration by session date and workout type."</span>,</span>
+<span id="cb2-58"><a href="#cb2-58"></a>    <span class="st">"September 1–October 25, 2026 | Cardio sessions are tennis."</span>,</span>
+<span id="cb2-59"><a href="#cb2-59"></a>    <span class="at">sep =</span> <span class="st">"</span><span class="sc">\n</span><span class="st">"</span></span>
+<span id="cb2-60"><a href="#cb2-60"></a>  ),</span>
+<span id="cb2-61"><a href="#cb2-61"></a>  <span class="at">x =</span> <span class="st">"Workout date"</span>,</span>
+<span id="cb2-62"><a href="#cb2-62"></a>  <span class="at">y =</span> <span class="st">"Total session duration (minutes)"</span>,</span>
+<span id="cb2-63"><a href="#cb2-63"></a>  <span class="at">color =</span> <span class="st">"Workout type"</span>,</span>
+<span id="cb2-64"><a href="#cb2-64"></a>  <span class="at">caption =</span> <span class="fu">paste</span>(</span>
+<span id="cb2-65"><a href="#cb2-65"></a>    <span class="st">"Joseph Saputra | September–October 2026"</span>,</span>
+<span id="cb2-66"><a href="#cb2-66"></a>    <span class="st">"Source: Workout App Tracker"</span>,</span>
+<span id="cb2-67"><a href="#cb2-67"></a>    <span class="st">"Lines connect recorded sessions of the same type; workouts were not recorded every day."</span>,</span>
+<span id="cb2-68"><a href="#cb2-68"></a>    <span class="at">sep =</span> <span class="st">"</span><span class="sc">\n</span><span class="st">"</span></span>
+<span id="cb2-69"><a href="#cb2-69"></a>  )</span>
+<span id="cb2-70"><a href="#cb2-70"></a>) <span class="sc">+</span></span>
+<span id="cb2-71"><a href="#cb2-71"></a>  <span class="fu">theme_minimal</span>(<span class="at">base_size =</span> <span class="dv">14</span>) <span class="sc">+</span></span>
+<span id="cb2-72"><a href="#cb2-72"></a>  <span class="fu">theme</span>(</span>
+<span id="cb2-73"><a href="#cb2-73"></a>    <span class="at">legend.position =</span> <span class="st">"bottom"</span>,</span>
+<span id="cb2-74"><a href="#cb2-74"></a>    <span class="at">panel.grid.minor =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb2-75"><a href="#cb2-75"></a>    <span class="at">panel.grid.major.x =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb2-76"><a href="#cb2-76"></a>    <span class="at">plot.title =</span> <span class="fu">element_text</span>(</span>
+<span id="cb2-77"><a href="#cb2-77"></a>      <span class="at">face =</span> <span class="st">"bold"</span>,</span>
+<span id="cb2-78"><a href="#cb2-78"></a>      <span class="at">size =</span> <span class="dv">18</span></span>
+<span id="cb2-79"><a href="#cb2-79"></a>    ),</span>
+<span id="cb2-80"><a href="#cb2-80"></a>    <span class="at">plot.subtitle =</span> <span class="fu">element_text</span>(</span>
+<span id="cb2-81"><a href="#cb2-81"></a>      <span class="at">size =</span> <span class="dv">12</span>,</span>
+<span id="cb2-82"><a href="#cb2-82"></a>      <span class="at">margin =</span> <span class="fu">margin</span>(<span class="at">b =</span> <span class="dv">15</span>)</span>
+<span id="cb2-83"><a href="#cb2-83"></a>    ),</span>
+<span id="cb2-84"><a href="#cb2-84"></a>    <span class="at">plot.caption =</span> <span class="fu">element_text</span>(</span>
+<span id="cb2-85"><a href="#cb2-85"></a>      <span class="at">color =</span> <span class="st">"gray45"</span>,</span>
+<span id="cb2-86"><a href="#cb2-86"></a>      <span class="at">hjust =</span> <span class="dv">0</span>,</span>
+<span id="cb2-87"><a href="#cb2-87"></a>      <span class="at">size =</span> <span class="dv">10</span>,</span>
+<span id="cb2-88"><a href="#cb2-88"></a>      <span class="at">margin =</span> <span class="fu">margin</span>(<span class="at">t =</span> <span class="dv">12</span>)</span>
+<span id="cb2-89"><a href="#cb2-89"></a>    )</span>
+<span id="cb2-90"><a href="#cb2-90"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details><div class="cell-output-display">
+<div>
+<figure class="figure"><p><img src="pvj-01_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>The main pattern is a difference between workout types. In this simulated log, leg workouts lasted longest, at around 70 minutes, although only three leg sessions were recorded. Cardio had the largest variation in duration, while push, pull, and shoulder sessions stayed relatively consistent. There was no clear overall increase or decrease from September to October. This suggests that session duration differed more by workout type than by time during this period.</p>
+</section><section id="pvj-final" class="level1"><h1>PVJ Final</h1>
+<div class="cell">
+<details class="code-fold"><summary>Code</summary><div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb3-2"><a href="#cb3-2"></a></span>
+<span id="cb3-3"><a href="#cb3-3"></a><span class="co"># Load the data</span></span>
+<span id="cb3-4"><a href="#cb3-4"></a>workout_details <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"workout_details.csv"</span>)</span>
+<span id="cb3-5"><a href="#cb3-5"></a></span>
+<span id="cb3-6"><a href="#cb3-6"></a>workout_details<span class="sc">$</span>date <span class="ot">&lt;-</span> <span class="fu">as.Date</span>(workout_details<span class="sc">$</span>date)</span>
+<span id="cb3-7"><a href="#cb3-7"></a></span>
+<span id="cb3-8"><a href="#cb3-8"></a><span class="co"># Put tennis in the Cardio category</span></span>
+<span id="cb3-9"><a href="#cb3-9"></a>workout_details<span class="sc">$</span>workout[</span>
+<span id="cb3-10"><a href="#cb3-10"></a>  workout_details<span class="sc">$</span>exercise <span class="sc">==</span> <span class="st">"Tennis"</span></span>
+<span id="cb3-11"><a href="#cb3-11"></a>] <span class="ot">&lt;-</span> <span class="st">"Cardio"</span></span>
+<span id="cb3-12"><a href="#cb3-12"></a></span>
+<span id="cb3-13"><a href="#cb3-13"></a><span class="co"># Keep one row per workout session</span></span>
+<span id="cb3-14"><a href="#cb3-14"></a>workouts <span class="ot">&lt;-</span> workout_details <span class="sc">%&gt;%</span></span>
+<span id="cb3-15"><a href="#cb3-15"></a>  <span class="fu">distinct</span>(date, workout, session_duration_min)</span>
+<span id="cb3-16"><a href="#cb3-16"></a></span>
+<span id="cb3-17"><a href="#cb3-17"></a><span class="fu">ggplot</span>(</span>
+<span id="cb3-18"><a href="#cb3-18"></a>  workouts,</span>
+<span id="cb3-19"><a href="#cb3-19"></a>  <span class="fu">aes</span>(</span>
+<span id="cb3-20"><a href="#cb3-20"></a>    <span class="at">x =</span> date,</span>
+<span id="cb3-21"><a href="#cb3-21"></a>    <span class="at">y =</span> session_duration_min,</span>
+<span id="cb3-22"><a href="#cb3-22"></a>    <span class="at">color =</span> workout,</span>
+<span id="cb3-23"><a href="#cb3-23"></a>    <span class="at">linetype =</span> workout,</span>
+<span id="cb3-24"><a href="#cb3-24"></a>    <span class="at">group =</span> workout</span>
+<span id="cb3-25"><a href="#cb3-25"></a>  )</span>
+<span id="cb3-26"><a href="#cb3-26"></a>) <span class="sc">+</span></span>
+<span id="cb3-27"><a href="#cb3-27"></a>  <span class="fu">geom_line</span>(<span class="at">linewidth =</span> <span class="fl">0.9</span>) <span class="sc">+</span></span>
+<span id="cb3-28"><a href="#cb3-28"></a></span>
+<span id="cb3-29"><a href="#cb3-29"></a>  <span class="co"># Small vertical marks show recorded sessions without dots</span></span>
+<span id="cb3-30"><a href="#cb3-30"></a>  <span class="fu">geom_point</span>(</span>
+<span id="cb3-31"><a href="#cb3-31"></a>    <span class="at">shape =</span> <span class="dv">124</span>,</span>
+<span id="cb3-32"><a href="#cb3-32"></a>    <span class="at">size =</span> <span class="dv">3</span>,</span>
+<span id="cb3-33"><a href="#cb3-33"></a>    <span class="at">show.legend =</span> <span class="cn">FALSE</span></span>
+<span id="cb3-34"><a href="#cb3-34"></a>  ) <span class="sc">+</span></span>
+<span id="cb3-35"><a href="#cb3-35"></a></span>
+<span id="cb3-36"><a href="#cb3-36"></a>  <span class="fu">scale_color_manual</span>(</span>
+<span id="cb3-37"><a href="#cb3-37"></a>    <span class="at">values =</span> <span class="fu">c</span>(</span>
+<span id="cb3-38"><a href="#cb3-38"></a>      <span class="st">"Push"</span> <span class="ot">=</span> <span class="st">"#D55E00"</span>,</span>
+<span id="cb3-39"><a href="#cb3-39"></a>      <span class="st">"Pull"</span> <span class="ot">=</span> <span class="st">"#0072B2"</span>,</span>
+<span id="cb3-40"><a href="#cb3-40"></a>      <span class="st">"Shoulders"</span> <span class="ot">=</span> <span class="st">"#007A5E"</span>,</span>
+<span id="cb3-41"><a href="#cb3-41"></a>      <span class="st">"Legs"</span> <span class="ot">=</span> <span class="st">"#444444"</span>,</span>
+<span id="cb3-42"><a href="#cb3-42"></a>      <span class="st">"Cardio"</span> <span class="ot">=</span> <span class="st">"#882255"</span></span>
+<span id="cb3-43"><a href="#cb3-43"></a>    )</span>
+<span id="cb3-44"><a href="#cb3-44"></a>  ) <span class="sc">+</span></span>
+<span id="cb3-45"><a href="#cb3-45"></a></span>
+<span id="cb3-46"><a href="#cb3-46"></a>  <span class="co"># Different line patterns help readers distinguish workout types</span></span>
+<span id="cb3-47"><a href="#cb3-47"></a>  <span class="fu">scale_linetype_manual</span>(</span>
+<span id="cb3-48"><a href="#cb3-48"></a>    <span class="at">values =</span> <span class="fu">c</span>(</span>
+<span id="cb3-49"><a href="#cb3-49"></a>      <span class="st">"Push"</span> <span class="ot">=</span> <span class="st">"longdash"</span>,</span>
+<span id="cb3-50"><a href="#cb3-50"></a>      <span class="st">"Pull"</span> <span class="ot">=</span> <span class="st">"dashed"</span>,</span>
+<span id="cb3-51"><a href="#cb3-51"></a>      <span class="st">"Shoulders"</span> <span class="ot">=</span> <span class="st">"twodash"</span>,</span>
+<span id="cb3-52"><a href="#cb3-52"></a>      <span class="st">"Legs"</span> <span class="ot">=</span> <span class="st">"solid"</span>,</span>
+<span id="cb3-53"><a href="#cb3-53"></a>      <span class="st">"Cardio"</span> <span class="ot">=</span> <span class="st">"dotdash"</span></span>
+<span id="cb3-54"><a href="#cb3-54"></a>    )</span>
+<span id="cb3-55"><a href="#cb3-55"></a>  ) <span class="sc">+</span></span>
+<span id="cb3-56"><a href="#cb3-56"></a></span>
+<span id="cb3-57"><a href="#cb3-57"></a>  <span class="co"># Label dates every seven days, starting September 1</span></span>
+<span id="cb3-58"><a href="#cb3-58"></a>  <span class="fu">scale_x_date</span>(</span>
+<span id="cb3-59"><a href="#cb3-59"></a>    <span class="at">breaks =</span> <span class="fu">seq</span>(</span>
+<span id="cb3-60"><a href="#cb3-60"></a>      <span class="fu">as.Date</span>(<span class="st">"2026-09-01"</span>),</span>
+<span id="cb3-61"><a href="#cb3-61"></a>      <span class="fu">as.Date</span>(<span class="st">"2026-10-25"</span>),</span>
+<span id="cb3-62"><a href="#cb3-62"></a>      <span class="at">by =</span> <span class="st">"7 days"</span></span>
+<span id="cb3-63"><a href="#cb3-63"></a>    ),</span>
+<span id="cb3-64"><a href="#cb3-64"></a>    <span class="at">date_labels =</span> <span class="st">"%b %d"</span></span>
+<span id="cb3-65"><a href="#cb3-65"></a>  ) <span class="sc">+</span></span>
+<span id="cb3-66"><a href="#cb3-66"></a></span>
+<span id="cb3-67"><a href="#cb3-67"></a>  <span class="fu">scale_y_continuous</span>(</span>
+<span id="cb3-68"><a href="#cb3-68"></a>    <span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">40</span>, <span class="dv">80</span>),</span>
+<span id="cb3-69"><a href="#cb3-69"></a>    <span class="at">breaks =</span> <span class="fu">seq</span>(<span class="dv">40</span>, <span class="dv">80</span>, <span class="dv">10</span>)</span>
+<span id="cb3-70"><a href="#cb3-70"></a>  ) <span class="sc">+</span></span>
+<span id="cb3-71"><a href="#cb3-71"></a></span>
+<span id="cb3-72"><a href="#cb3-72"></a>  <span class="fu">labs</span>(</span>
+<span id="cb3-73"><a href="#cb3-73"></a>    <span class="at">title =</span> <span class="st">"Workout Session Duration by Type Over Time"</span>,</span>
+<span id="cb3-74"><a href="#cb3-74"></a>    <span class="at">subtitle =</span> <span class="fu">paste</span>(</span>
+<span id="cb3-75"><a href="#cb3-75"></a>      <span class="st">"September 1–October 25, 2026 | Cardio = tennis"</span>,</span>
+<span id="cb3-76"><a href="#cb3-76"></a>      <span class="st">"Vertical marks show recorded sessions; lines connect sessions of the same type."</span>,</span>
+<span id="cb3-77"><a href="#cb3-77"></a>      <span class="at">sep =</span> <span class="st">"</span><span class="sc">\n</span><span class="st">"</span></span>
+<span id="cb3-78"><a href="#cb3-78"></a>    ),</span>
+<span id="cb3-79"><a href="#cb3-79"></a>    <span class="at">x =</span> <span class="st">"Workout date"</span>,</span>
+<span id="cb3-80"><a href="#cb3-80"></a>    <span class="at">y =</span> <span class="st">"Session duration (minutes)"</span>,</span>
+<span id="cb3-81"><a href="#cb3-81"></a>    <span class="at">color =</span> <span class="st">"Workout type"</span>,</span>
+<span id="cb3-82"><a href="#cb3-82"></a>    <span class="at">linetype =</span> <span class="st">"Workout type"</span>,</span>
+<span id="cb3-83"><a href="#cb3-83"></a>    <span class="at">caption =</span> <span class="fu">paste</span>(</span>
+<span id="cb3-84"><a href="#cb3-84"></a>      <span class="st">"Joseph Saputra | September–October 2026"</span>,</span>
+<span id="cb3-85"><a href="#cb3-85"></a>      <span class="st">"Source: Joseph's workout log (simulated data)."</span>,</span>
+<span id="cb3-86"><a href="#cb3-86"></a>      <span class="st">"Connecting lines do not indicate workouts on the days between recorded sessions."</span>,</span>
+<span id="cb3-87"><a href="#cb3-87"></a>      <span class="at">sep =</span> <span class="st">"</span><span class="sc">\n</span><span class="st">"</span></span>
+<span id="cb3-88"><a href="#cb3-88"></a>    )</span>
+<span id="cb3-89"><a href="#cb3-89"></a>  ) <span class="sc">+</span></span>
+<span id="cb3-90"><a href="#cb3-90"></a></span>
+<span id="cb3-91"><a href="#cb3-91"></a>  <span class="fu">theme_classic</span>(<span class="at">base_size =</span> <span class="dv">13</span>) <span class="sc">+</span></span>
+<span id="cb3-92"><a href="#cb3-92"></a></span>
+<span id="cb3-93"><a href="#cb3-93"></a>  <span class="fu">theme</span>(</span>
+<span id="cb3-94"><a href="#cb3-94"></a>    <span class="co"># Light horizontal gridlines help compare durations</span></span>
+<span id="cb3-95"><a href="#cb3-95"></a>    <span class="at">panel.grid.major.y =</span> <span class="fu">element_line</span>(</span>
+<span id="cb3-96"><a href="#cb3-96"></a>      <span class="at">color =</span> <span class="st">"gray90"</span>,</span>
+<span id="cb3-97"><a href="#cb3-97"></a>      <span class="at">linewidth =</span> <span class="fl">0.4</span></span>
+<span id="cb3-98"><a href="#cb3-98"></a>    ),</span>
+<span id="cb3-99"><a href="#cb3-99"></a></span>
+<span id="cb3-100"><a href="#cb3-100"></a>    <span class="at">plot.title =</span> <span class="fu">element_text</span>(</span>
+<span id="cb3-101"><a href="#cb3-101"></a>      <span class="at">face =</span> <span class="st">"bold"</span>,</span>
+<span id="cb3-102"><a href="#cb3-102"></a>      <span class="at">size =</span> <span class="dv">17</span>,</span>
+<span id="cb3-103"><a href="#cb3-103"></a>      <span class="at">color =</span> <span class="st">"gray15"</span></span>
+<span id="cb3-104"><a href="#cb3-104"></a>    ),</span>
+<span id="cb3-105"><a href="#cb3-105"></a></span>
+<span id="cb3-106"><a href="#cb3-106"></a>    <span class="at">plot.subtitle =</span> <span class="fu">element_text</span>(</span>
+<span id="cb3-107"><a href="#cb3-107"></a>      <span class="at">size =</span> <span class="dv">11</span>,</span>
+<span id="cb3-108"><a href="#cb3-108"></a>      <span class="at">color =</span> <span class="st">"gray35"</span>,</span>
+<span id="cb3-109"><a href="#cb3-109"></a>      <span class="at">lineheight =</span> <span class="fl">1.2</span>,</span>
+<span id="cb3-110"><a href="#cb3-110"></a>      <span class="at">margin =</span> <span class="fu">margin</span>(<span class="at">b =</span> <span class="dv">15</span>)</span>
+<span id="cb3-111"><a href="#cb3-111"></a>    ),</span>
+<span id="cb3-112"><a href="#cb3-112"></a></span>
+<span id="cb3-113"><a href="#cb3-113"></a>    <span class="at">axis.text =</span> <span class="fu">element_text</span>(</span>
+<span id="cb3-114"><a href="#cb3-114"></a>      <span class="at">color =</span> <span class="st">"gray30"</span></span>
+<span id="cb3-115"><a href="#cb3-115"></a>    ),</span>
+<span id="cb3-116"><a href="#cb3-116"></a></span>
+<span id="cb3-117"><a href="#cb3-117"></a>    <span class="at">axis.title.x =</span> <span class="fu">element_text</span>(</span>
+<span id="cb3-118"><a href="#cb3-118"></a>      <span class="at">margin =</span> <span class="fu">margin</span>(<span class="at">t =</span> <span class="dv">10</span>)</span>
+<span id="cb3-119"><a href="#cb3-119"></a>    ),</span>
+<span id="cb3-120"><a href="#cb3-120"></a></span>
+<span id="cb3-121"><a href="#cb3-121"></a>    <span class="at">axis.title.y =</span> <span class="fu">element_text</span>(</span>
+<span id="cb3-122"><a href="#cb3-122"></a>      <span class="at">margin =</span> <span class="fu">margin</span>(<span class="at">r =</span> <span class="dv">10</span>)</span>
+<span id="cb3-123"><a href="#cb3-123"></a>    ),</span>
+<span id="cb3-124"><a href="#cb3-124"></a></span>
+<span id="cb3-125"><a href="#cb3-125"></a>    <span class="at">legend.position =</span> <span class="st">"bottom"</span>,</span>
+<span id="cb3-126"><a href="#cb3-126"></a>    <span class="at">legend.key.width =</span> grid<span class="sc">::</span><span class="fu">unit</span>(<span class="fl">1.4</span>, <span class="st">"cm"</span>),</span>
+<span id="cb3-127"><a href="#cb3-127"></a>    <span class="at">legend.text =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">11</span>),</span>
+<span id="cb3-128"><a href="#cb3-128"></a>    <span class="at">legend.title =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">11</span>),</span>
+<span id="cb3-129"><a href="#cb3-129"></a></span>
+<span id="cb3-130"><a href="#cb3-130"></a>    <span class="at">plot.caption =</span> <span class="fu">element_text</span>(</span>
+<span id="cb3-131"><a href="#cb3-131"></a>      <span class="at">color =</span> <span class="st">"gray45"</span>,</span>
+<span id="cb3-132"><a href="#cb3-132"></a>      <span class="at">hjust =</span> <span class="dv">0</span>,</span>
+<span id="cb3-133"><a href="#cb3-133"></a>      <span class="at">size =</span> <span class="dv">10</span>,</span>
+<span id="cb3-134"><a href="#cb3-134"></a>      <span class="at">lineheight =</span> <span class="fl">1.2</span>,</span>
+<span id="cb3-135"><a href="#cb3-135"></a>      <span class="at">margin =</span> <span class="fu">margin</span>(<span class="at">t =</span> <span class="dv">12</span>)</span>
+<span id="cb3-136"><a href="#cb3-136"></a>    ),</span>
+<span id="cb3-137"><a href="#cb3-137"></a></span>
+<span id="cb3-138"><a href="#cb3-138"></a>    <span class="at">plot.margin =</span> <span class="fu">margin</span>(<span class="dv">15</span>, <span class="dv">20</span>, <span class="dv">15</span>, <span class="dv">15</span>)</span>
+<span id="cb3-139"><a href="#cb3-139"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details><div class="cell-output-display">
+<div>
+<figure class="figure"><p><img src="pvj-01_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid figure-img" alt="A line graph of simulated workout durations from September 1 to October 25, 2026. Five colors and line patterns distinguish workout types. Small vertical marks indicate recorded sessions. Leg workouts last longest, around 70 minutes, while cardio durations vary most." width="1056"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>In this simulated workout log, leg sessions lasted longest, at around 68–72 minutes, although only three sessions were recorded. Cardio varied most, ranging from about 45 to 60 minutes, while push, pull, and shoulder sessions remained relatively consistent. The different line patterns make these comparisons easier to follow, and vertical marks identify individual recorded sessions. Overall, there was no clear upward or downward trend from September to October; the clearest pattern was the difference in duration between workout types.</p>
 
 
 <!-- -->
@@ -1060,94 +1309,362 @@ cookieconsent.run({
       </a>
   </div>
 </nav><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2" data-shortcodes="false"><pre class="sourceCode numberSource markdown number-lines code-with-copy"><code class="sourceCode markdown"><span id="cb2-1"><a href="#cb2-1"></a><span class="co">---</span></span>
-<span id="cb2-2"><a href="#cb2-2"></a><span class="an">title:</span><span class="co"> "Personal Visualization Journey"</span></span>
-<span id="cb2-3"><a href="#cb2-3"></a><span class="co">---</span></span>
-<span id="cb2-4"><a href="#cb2-4"></a></span>
-<span id="cb2-5"><a href="#cb2-5"></a>Add content here</span>
-<span id="cb2-6"><a href="#cb2-6"></a></span>
-<span id="cb2-7"><a href="#cb2-7"></a></span>
-<span id="cb2-8"><a href="#cb2-8"></a></span>
-<span id="cb2-9"><a href="#cb2-9"></a><span class="fu"># Viz 1</span></span>
-<span id="cb2-10"><a href="#cb2-10"></a></span>
-<span id="cb2-13"><a href="#cb2-13"></a><span class="in">```{r}</span></span>
-<span id="cb2-14"><a href="#cb2-14"></a><span class="co">#| fig-width: 11</span></span>
-<span id="cb2-15"><a href="#cb2-15"></a><span class="co">#| fig-height: 6</span></span>
-<span id="cb2-16"><a href="#cb2-16"></a><span class="co">#| fig-alt: "A line graph shows simulated workout session durations from September 1 to October 25, 2026. Five colored lines represent push, pull, shoulders, legs, and cardio. Points mark individual sessions. Leg sessions last longest, while cardio duration varies most."</span></span>
-<span id="cb2-17"><a href="#cb2-17"></a></span>
-<span id="cb2-18"><a href="#cb2-18"></a><span class="fu">library</span>(tidyverse)</span>
-<span id="cb2-19"><a href="#cb2-19"></a></span>
-<span id="cb2-20"><a href="#cb2-20"></a><span class="co"># Load the detailed dataset</span></span>
-<span id="cb2-21"><a href="#cb2-21"></a>workout_details <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"workout_details.csv"</span>)</span>
-<span id="cb2-22"><a href="#cb2-22"></a></span>
-<span id="cb2-23"><a href="#cb2-23"></a>workout_details<span class="sc">$</span>date <span class="ot">&lt;-</span> <span class="fu">as.Date</span>(workout_details<span class="sc">$</span>date)</span>
-<span id="cb2-24"><a href="#cb2-24"></a></span>
-<span id="cb2-25"><a href="#cb2-25"></a><span class="co"># Put tennis in the Cardio category</span></span>
-<span id="cb2-26"><a href="#cb2-26"></a>workout_details<span class="sc">$</span>workout[</span>
-<span id="cb2-27"><a href="#cb2-27"></a>  workout_details<span class="sc">$</span>exercise <span class="sc">==</span> <span class="st">"Tennis"</span></span>
-<span id="cb2-28"><a href="#cb2-28"></a>] <span class="ot">&lt;-</span> <span class="st">"Cardio"</span></span>
-<span id="cb2-29"><a href="#cb2-29"></a></span>
-<span id="cb2-30"><a href="#cb2-30"></a><span class="co"># Keep one row per session</span></span>
-<span id="cb2-31"><a href="#cb2-31"></a>workouts <span class="ot">&lt;-</span> workout_details <span class="sc">%&gt;%</span></span>
-<span id="cb2-32"><a href="#cb2-32"></a>  <span class="fu">distinct</span>(date, workout, session_duration_min)</span>
-<span id="cb2-33"><a href="#cb2-33"></a></span>
-<span id="cb2-34"><a href="#cb2-34"></a><span class="co"># Create one graph with five lines</span></span>
-<span id="cb2-35"><a href="#cb2-35"></a>line_plot <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(</span>
-<span id="cb2-36"><a href="#cb2-36"></a>  workouts,</span>
-<span id="cb2-37"><a href="#cb2-37"></a>  <span class="fu">aes</span>(</span>
-<span id="cb2-38"><a href="#cb2-38"></a>    <span class="at">x =</span> date,</span>
-<span id="cb2-39"><a href="#cb2-39"></a>    <span class="at">y =</span> session_duration_min,</span>
-<span id="cb2-40"><a href="#cb2-40"></a>    <span class="at">color =</span> workout,</span>
-<span id="cb2-41"><a href="#cb2-41"></a>    <span class="at">group =</span> workout</span>
-<span id="cb2-42"><a href="#cb2-42"></a>  )</span>
-<span id="cb2-43"><a href="#cb2-43"></a>) <span class="sc">+</span></span>
-<span id="cb2-44"><a href="#cb2-44"></a>  <span class="fu">geom_line</span>(<span class="at">linewidth =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
-<span id="cb2-45"><a href="#cb2-45"></a>  <span class="fu">geom_point</span>(</span>
-<span id="cb2-46"><a href="#cb2-46"></a>    <span class="fu">aes</span>(<span class="at">shape =</span> workout),</span>
-<span id="cb2-47"><a href="#cb2-47"></a>    <span class="at">size =</span> <span class="dv">3</span></span>
-<span id="cb2-48"><a href="#cb2-48"></a>  ) <span class="sc">+</span></span>
-<span id="cb2-49"><a href="#cb2-49"></a>  <span class="fu">scale_color_manual</span>(</span>
-<span id="cb2-50"><a href="#cb2-50"></a>    <span class="at">values =</span> <span class="fu">c</span>(</span>
-<span id="cb2-51"><a href="#cb2-51"></a>      <span class="st">"Push"</span> <span class="ot">=</span> <span class="st">"#D55E00"</span>,</span>
-<span id="cb2-52"><a href="#cb2-52"></a>      <span class="st">"Pull"</span> <span class="ot">=</span> <span class="st">"#0072B2"</span>,</span>
-<span id="cb2-53"><a href="#cb2-53"></a>      <span class="st">"Shoulders"</span> <span class="ot">=</span> <span class="st">"#007A5E"</span>,</span>
-<span id="cb2-54"><a href="#cb2-54"></a>      <span class="st">"Legs"</span> <span class="ot">=</span> <span class="st">"#444444"</span>,</span>
-<span id="cb2-55"><a href="#cb2-55"></a>      <span class="st">"Cardio"</span> <span class="ot">=</span> <span class="st">"#882255"</span></span>
-<span id="cb2-56"><a href="#cb2-56"></a>    )</span>
-<span id="cb2-57"><a href="#cb2-57"></a>  ) <span class="sc">+</span></span>
-<span id="cb2-58"><a href="#cb2-58"></a>  <span class="fu">scale_x_date</span>(</span>
-<span id="cb2-59"><a href="#cb2-59"></a>    <span class="at">date_breaks =</span> <span class="st">"1 week"</span>,</span>
-<span id="cb2-60"><a href="#cb2-60"></a>    <span class="at">date_labels =</span> <span class="st">"%b %d"</span></span>
-<span id="cb2-61"><a href="#cb2-61"></a>  ) <span class="sc">+</span></span>
-<span id="cb2-62"><a href="#cb2-62"></a>  <span class="fu">scale_y_continuous</span>(</span>
-<span id="cb2-63"><a href="#cb2-63"></a>    <span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">40</span>, <span class="dv">80</span>),</span>
-<span id="cb2-64"><a href="#cb2-64"></a>    <span class="at">breaks =</span> <span class="fu">seq</span>(<span class="dv">40</span>, <span class="dv">80</span>, <span class="dv">10</span>)</span>
-<span id="cb2-65"><a href="#cb2-65"></a>  ) <span class="sc">+</span></span>
-<span id="cb2-66"><a href="#cb2-66"></a>  <span class="fu">labs</span>(</span>
-<span id="cb2-67"><a href="#cb2-67"></a>    <span class="at">title =</span> <span class="st">"How long were my workout sessions?"</span>,</span>
-<span id="cb2-68"><a href="#cb2-68"></a>    <span class="at">subtitle =</span> <span class="st">"Workout Log | September 1–October 25, 2026"</span>,</span>
-<span id="cb2-69"><a href="#cb2-69"></a>    <span class="at">x =</span> <span class="st">"Session date"</span>,</span>
-<span id="cb2-70"><a href="#cb2-70"></a>    <span class="at">y =</span> <span class="st">"Session duration (minutes)"</span>,</span>
-<span id="cb2-71"><a href="#cb2-71"></a>    <span class="at">color =</span> <span class="st">"Workout type"</span>,</span>
-<span id="cb2-72"><a href="#cb2-72"></a>    <span class="at">shape =</span> <span class="st">"Workout type"</span>,</span>
-<span id="cb2-73"><a href="#cb2-73"></a>    <span class="at">caption =</span> <span class="fu">paste</span>(</span>
-<span id="cb2-74"><a href="#cb2-74"></a>      <span class="st">"Joseph Saputra | October 25, 2026"</span>,</span>
-<span id="cb2-75"><a href="#cb2-75"></a>      <span class="st">"Source: Workout App Tracker"</span>,</span>
-<span id="cb2-76"><a href="#cb2-76"></a>      <span class="st">"Points mark sessions; lines connect sessions of the same type."</span>,</span>
-<span id="cb2-77"><a href="#cb2-77"></a>      <span class="at">sep =</span> <span class="st">"</span><span class="sc">\n</span><span class="st">"</span></span>
-<span id="cb2-78"><a href="#cb2-78"></a>    )</span>
-<span id="cb2-79"><a href="#cb2-79"></a>  ) <span class="sc">+</span></span>
-<span id="cb2-80"><a href="#cb2-80"></a>  <span class="fu">theme_minimal</span>(<span class="at">base_size =</span> <span class="dv">14</span>) <span class="sc">+</span></span>
-<span id="cb2-81"><a href="#cb2-81"></a>  <span class="fu">theme</span>(</span>
-<span id="cb2-82"><a href="#cb2-82"></a>    <span class="at">legend.position =</span> <span class="st">"bottom"</span>,</span>
-<span id="cb2-83"><a href="#cb2-83"></a>    <span class="at">panel.grid.minor =</span> <span class="fu">element_blank</span>(),</span>
-<span id="cb2-84"><a href="#cb2-84"></a>    <span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">face =</span> <span class="st">"bold"</span>),</span>
-<span id="cb2-85"><a href="#cb2-85"></a>    <span class="at">plot.caption =</span> <span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="dv">0</span>, <span class="at">size =</span> <span class="dv">10</span>)</span>
-<span id="cb2-86"><a href="#cb2-86"></a>  )</span>
-<span id="cb2-87"><a href="#cb2-87"></a></span>
-<span id="cb2-88"><a href="#cb2-88"></a>line_plot</span>
-<span id="cb2-89"><a href="#cb2-89"></a><span class="in">```</span></span>
-<span id="cb2-90"><a href="#cb2-90"></a></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4" data-shortcodes="false"><pre class="sourceCode numberSource markdown number-lines code-with-copy"><code class="sourceCode markdown"><span id="cb4-1"><a href="#cb4-1"></a><span class="co">---</span></span>
+<span id="cb4-2"><a href="#cb4-2"></a><span class="an">title:</span><span class="co"> "Personal Visualization Journey"</span></span>
+<span id="cb4-3"><a href="#cb4-3"></a><span class="co">---</span></span>
+<span id="cb4-4"><a href="#cb4-4"></a></span>
+<span id="cb4-5"><a href="#cb4-5"></a>Add content here</span>
+<span id="cb4-6"><a href="#cb4-6"></a></span>
+<span id="cb4-7"><a href="#cb4-7"></a></span>
+<span id="cb4-8"><a href="#cb4-8"></a></span>
+<span id="cb4-9"><a href="#cb4-9"></a><span class="fu"># Viz 1</span></span>
+<span id="cb4-10"><a href="#cb4-10"></a></span>
+<span id="cb4-13"><a href="#cb4-13"></a><span class="in">```{r}</span></span>
+<span id="cb4-14"><a href="#cb4-14"></a><span class="co">#| fig-width: 11</span></span>
+<span id="cb4-15"><a href="#cb4-15"></a><span class="co">#| fig-height: 6</span></span>
+<span id="cb4-16"><a href="#cb4-16"></a><span class="co">#| fig-alt: "A line graph shows simulated workout session durations from September 1 to October 25, 2026. Five colored lines represent push, pull, shoulders, legs, and cardio. Points mark individual sessions. Leg sessions last longest, while cardio duration varies most."</span></span>
+<span id="cb4-17"><a href="#cb4-17"></a></span>
+<span id="cb4-18"><a href="#cb4-18"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb4-19"><a href="#cb4-19"></a></span>
+<span id="cb4-20"><a href="#cb4-20"></a><span class="co"># Load the detailed dataset</span></span>
+<span id="cb4-21"><a href="#cb4-21"></a>workout_details <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"workout_details.csv"</span>)</span>
+<span id="cb4-22"><a href="#cb4-22"></a></span>
+<span id="cb4-23"><a href="#cb4-23"></a>workout_details<span class="sc">$</span>date <span class="ot">&lt;-</span> <span class="fu">as.Date</span>(workout_details<span class="sc">$</span>date)</span>
+<span id="cb4-24"><a href="#cb4-24"></a></span>
+<span id="cb4-25"><a href="#cb4-25"></a><span class="co"># Put tennis in the Cardio category</span></span>
+<span id="cb4-26"><a href="#cb4-26"></a>workout_details<span class="sc">$</span>workout[</span>
+<span id="cb4-27"><a href="#cb4-27"></a>  workout_details<span class="sc">$</span>exercise <span class="sc">==</span> <span class="st">"Tennis"</span></span>
+<span id="cb4-28"><a href="#cb4-28"></a>] <span class="ot">&lt;-</span> <span class="st">"Cardio"</span></span>
+<span id="cb4-29"><a href="#cb4-29"></a></span>
+<span id="cb4-30"><a href="#cb4-30"></a><span class="co"># Keep one row per session</span></span>
+<span id="cb4-31"><a href="#cb4-31"></a>workouts <span class="ot">&lt;-</span> workout_details <span class="sc">%&gt;%</span></span>
+<span id="cb4-32"><a href="#cb4-32"></a>  <span class="fu">distinct</span>(date, workout, session_duration_min)</span>
+<span id="cb4-33"><a href="#cb4-33"></a></span>
+<span id="cb4-34"><a href="#cb4-34"></a><span class="co"># Create one graph with five lines</span></span>
+<span id="cb4-35"><a href="#cb4-35"></a>line_plot <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(</span>
+<span id="cb4-36"><a href="#cb4-36"></a>  workouts,</span>
+<span id="cb4-37"><a href="#cb4-37"></a>  <span class="fu">aes</span>(</span>
+<span id="cb4-38"><a href="#cb4-38"></a>    <span class="at">x =</span> date,</span>
+<span id="cb4-39"><a href="#cb4-39"></a>    <span class="at">y =</span> session_duration_min,</span>
+<span id="cb4-40"><a href="#cb4-40"></a>    <span class="at">color =</span> workout,</span>
+<span id="cb4-41"><a href="#cb4-41"></a>    <span class="at">group =</span> workout</span>
+<span id="cb4-42"><a href="#cb4-42"></a>  )</span>
+<span id="cb4-43"><a href="#cb4-43"></a>) <span class="sc">+</span></span>
+<span id="cb4-44"><a href="#cb4-44"></a>  <span class="fu">geom_line</span>(<span class="at">linewidth =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb4-45"><a href="#cb4-45"></a>  <span class="fu">geom_point</span>(</span>
+<span id="cb4-46"><a href="#cb4-46"></a>    <span class="fu">aes</span>(<span class="at">shape =</span> workout),</span>
+<span id="cb4-47"><a href="#cb4-47"></a>    <span class="at">size =</span> <span class="dv">3</span></span>
+<span id="cb4-48"><a href="#cb4-48"></a>  ) <span class="sc">+</span></span>
+<span id="cb4-49"><a href="#cb4-49"></a>  <span class="fu">scale_color_manual</span>(</span>
+<span id="cb4-50"><a href="#cb4-50"></a>    <span class="at">values =</span> <span class="fu">c</span>(</span>
+<span id="cb4-51"><a href="#cb4-51"></a>      <span class="st">"Push"</span> <span class="ot">=</span> <span class="st">"#D55E00"</span>,</span>
+<span id="cb4-52"><a href="#cb4-52"></a>      <span class="st">"Pull"</span> <span class="ot">=</span> <span class="st">"#0072B2"</span>,</span>
+<span id="cb4-53"><a href="#cb4-53"></a>      <span class="st">"Shoulders"</span> <span class="ot">=</span> <span class="st">"#007A5E"</span>,</span>
+<span id="cb4-54"><a href="#cb4-54"></a>      <span class="st">"Legs"</span> <span class="ot">=</span> <span class="st">"#444444"</span>,</span>
+<span id="cb4-55"><a href="#cb4-55"></a>      <span class="st">"Cardio"</span> <span class="ot">=</span> <span class="st">"#882255"</span></span>
+<span id="cb4-56"><a href="#cb4-56"></a>    )</span>
+<span id="cb4-57"><a href="#cb4-57"></a>  ) <span class="sc">+</span></span>
+<span id="cb4-58"><a href="#cb4-58"></a>  <span class="fu">scale_x_date</span>(</span>
+<span id="cb4-59"><a href="#cb4-59"></a>    <span class="at">date_breaks =</span> <span class="st">"1 week"</span>,</span>
+<span id="cb4-60"><a href="#cb4-60"></a>    <span class="at">date_labels =</span> <span class="st">"%b %d"</span></span>
+<span id="cb4-61"><a href="#cb4-61"></a>  ) <span class="sc">+</span></span>
+<span id="cb4-62"><a href="#cb4-62"></a>  <span class="fu">scale_y_continuous</span>(</span>
+<span id="cb4-63"><a href="#cb4-63"></a>    <span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">40</span>, <span class="dv">80</span>),</span>
+<span id="cb4-64"><a href="#cb4-64"></a>    <span class="at">breaks =</span> <span class="fu">seq</span>(<span class="dv">40</span>, <span class="dv">80</span>, <span class="dv">10</span>)</span>
+<span id="cb4-65"><a href="#cb4-65"></a>  ) <span class="sc">+</span></span>
+<span id="cb4-66"><a href="#cb4-66"></a>  <span class="fu">labs</span>(</span>
+<span id="cb4-67"><a href="#cb4-67"></a>    <span class="at">title =</span> <span class="st">"How long were my workout sessions?"</span>,</span>
+<span id="cb4-68"><a href="#cb4-68"></a>    <span class="at">subtitle =</span> <span class="st">"Workout Log | September 1–October 25, 2026"</span>,</span>
+<span id="cb4-69"><a href="#cb4-69"></a>    <span class="at">x =</span> <span class="st">"Session date"</span>,</span>
+<span id="cb4-70"><a href="#cb4-70"></a>    <span class="at">y =</span> <span class="st">"Session duration (minutes)"</span>,</span>
+<span id="cb4-71"><a href="#cb4-71"></a>    <span class="at">color =</span> <span class="st">"Workout type"</span>,</span>
+<span id="cb4-72"><a href="#cb4-72"></a>    <span class="at">shape =</span> <span class="st">"Workout type"</span>,</span>
+<span id="cb4-73"><a href="#cb4-73"></a>    <span class="at">caption =</span> <span class="fu">paste</span>(</span>
+<span id="cb4-74"><a href="#cb4-74"></a>      <span class="st">"Joseph Saputra | October 25, 2026"</span>,</span>
+<span id="cb4-75"><a href="#cb4-75"></a>      <span class="st">"Source: Workout App Tracker"</span>,</span>
+<span id="cb4-76"><a href="#cb4-76"></a>      <span class="st">"Points mark sessions; lines connect sessions of the same type."</span>,</span>
+<span id="cb4-77"><a href="#cb4-77"></a>      <span class="at">sep =</span> <span class="st">"</span><span class="sc">\n</span><span class="st">"</span></span>
+<span id="cb4-78"><a href="#cb4-78"></a>    )</span>
+<span id="cb4-79"><a href="#cb4-79"></a>  ) <span class="sc">+</span></span>
+<span id="cb4-80"><a href="#cb4-80"></a>  <span class="fu">theme_minimal</span>(<span class="at">base_size =</span> <span class="dv">14</span>) <span class="sc">+</span></span>
+<span id="cb4-81"><a href="#cb4-81"></a>  <span class="fu">theme</span>(</span>
+<span id="cb4-82"><a href="#cb4-82"></a>    <span class="at">legend.position =</span> <span class="st">"bottom"</span>,</span>
+<span id="cb4-83"><a href="#cb4-83"></a>    <span class="at">panel.grid.minor =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb4-84"><a href="#cb4-84"></a>    <span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">face =</span> <span class="st">"bold"</span>),</span>
+<span id="cb4-85"><a href="#cb4-85"></a>    <span class="at">plot.caption =</span> <span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="dv">0</span>, <span class="at">size =</span> <span class="dv">10</span>)</span>
+<span id="cb4-86"><a href="#cb4-86"></a>  )</span>
+<span id="cb4-87"><a href="#cb4-87"></a></span>
+<span id="cb4-88"><a href="#cb4-88"></a>line_plot</span>
+<span id="cb4-89"><a href="#cb4-89"></a><span class="in">```</span></span>
+<span id="cb4-90"><a href="#cb4-90"></a></span>
+<span id="cb4-91"><a href="#cb4-91"></a></span>
+<span id="cb4-92"><a href="#cb4-92"></a></span>
+<span id="cb4-93"><a href="#cb4-93"></a></span>
+<span id="cb4-94"><a href="#cb4-94"></a></span>
+<span id="cb4-95"><a href="#cb4-95"></a></span>
+<span id="cb4-96"><a href="#cb4-96"></a></span>
+<span id="cb4-97"><a href="#cb4-97"></a></span>
+<span id="cb4-98"><a href="#cb4-98"></a></span>
+<span id="cb4-99"><a href="#cb4-99"></a></span>
+<span id="cb4-100"><a href="#cb4-100"></a></span>
+<span id="cb4-101"><a href="#cb4-101"></a></span>
+<span id="cb4-102"><a href="#cb4-102"></a></span>
+<span id="cb4-103"><a href="#cb4-103"></a></span>
+<span id="cb4-104"><a href="#cb4-104"></a></span>
+<span id="cb4-105"><a href="#cb4-105"></a></span>
+<span id="cb4-106"><a href="#cb4-106"></a></span>
+<span id="cb4-109"><a href="#cb4-109"></a><span class="in">```{r}</span></span>
+<span id="cb4-110"><a href="#cb4-110"></a><span class="co">#| fig-width: 11</span></span>
+<span id="cb4-111"><a href="#cb4-111"></a><span class="co">#| fig-height: 6.5</span></span>
+<span id="cb4-112"><a href="#cb4-112"></a><span class="co">#| fig-alt: "A line graph of simulated workout durations from September 1 to October 25, 2026. Leg workouts last around 70 minutes. Cardio varies most, between approximately 45 and 60 minutes. Other workout types remain relatively stable, with no clear overall upward or downward trend."</span></span>
+<span id="cb4-113"><a href="#cb4-113"></a></span>
+<span id="cb4-114"><a href="#cb4-114"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb4-115"><a href="#cb4-115"></a></span>
+<span id="cb4-116"><a href="#cb4-116"></a><span class="co"># Load the data</span></span>
+<span id="cb4-117"><a href="#cb4-117"></a>workout_details <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"workout_details.csv"</span>)</span>
+<span id="cb4-118"><a href="#cb4-118"></a></span>
+<span id="cb4-119"><a href="#cb4-119"></a>workout_details<span class="sc">$</span>date <span class="ot">&lt;-</span> <span class="fu">as.Date</span>(workout_details<span class="sc">$</span>date)</span>
+<span id="cb4-120"><a href="#cb4-120"></a></span>
+<span id="cb4-121"><a href="#cb4-121"></a><span class="co"># Put tennis in the Cardio category</span></span>
+<span id="cb4-122"><a href="#cb4-122"></a>workout_details<span class="sc">$</span>workout[</span>
+<span id="cb4-123"><a href="#cb4-123"></a>  workout_details<span class="sc">$</span>exercise <span class="sc">==</span> <span class="st">"Tennis"</span></span>
+<span id="cb4-124"><a href="#cb4-124"></a>] <span class="ot">&lt;-</span> <span class="st">"Cardio"</span></span>
+<span id="cb4-125"><a href="#cb4-125"></a></span>
+<span id="cb4-126"><a href="#cb4-126"></a><span class="co"># Keep one row per workout session</span></span>
+<span id="cb4-127"><a href="#cb4-127"></a>workouts <span class="ot">&lt;-</span> workout_details <span class="sc">%&gt;%</span></span>
+<span id="cb4-128"><a href="#cb4-128"></a>  <span class="fu">distinct</span>(date, workout, session_duration_min)</span>
+<span id="cb4-129"><a href="#cb4-129"></a></span>
+<span id="cb4-130"><a href="#cb4-130"></a><span class="fu">ggplot</span>(</span>
+<span id="cb4-131"><a href="#cb4-131"></a>  workouts,</span>
+<span id="cb4-132"><a href="#cb4-132"></a>  <span class="fu">aes</span>(</span>
+<span id="cb4-133"><a href="#cb4-133"></a>    <span class="at">x =</span> date,</span>
+<span id="cb4-134"><a href="#cb4-134"></a>    <span class="at">y =</span> session_duration_min,</span>
+<span id="cb4-135"><a href="#cb4-135"></a>    <span class="at">color =</span> workout,</span>
+<span id="cb4-136"><a href="#cb4-136"></a>    <span class="at">group =</span> workout</span>
+<span id="cb4-137"><a href="#cb4-137"></a>  )</span>
+<span id="cb4-138"><a href="#cb4-138"></a>) <span class="sc">+</span></span>
+<span id="cb4-139"><a href="#cb4-139"></a>  <span class="fu">geom_line</span>(<span class="at">linewidth =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb4-140"><a href="#cb4-140"></a>  <span class="fu">scale_color_manual</span>(</span>
+<span id="cb4-141"><a href="#cb4-141"></a>    <span class="at">values =</span> <span class="fu">c</span>(</span>
+<span id="cb4-142"><a href="#cb4-142"></a>      <span class="st">"Push"</span> <span class="ot">=</span> <span class="st">"#D55E00"</span>,</span>
+<span id="cb4-143"><a href="#cb4-143"></a>      <span class="st">"Pull"</span> <span class="ot">=</span> <span class="st">"#0072B2"</span>,</span>
+<span id="cb4-144"><a href="#cb4-144"></a>      <span class="st">"Shoulders"</span> <span class="ot">=</span> <span class="st">"#007A5E"</span>,</span>
+<span id="cb4-145"><a href="#cb4-145"></a>      <span class="st">"Legs"</span> <span class="ot">=</span> <span class="st">"#444444"</span>,</span>
+<span id="cb4-146"><a href="#cb4-146"></a>      <span class="st">"Cardio"</span> <span class="ot">=</span> <span class="st">"#882255"</span></span>
+<span id="cb4-147"><a href="#cb4-147"></a>    )</span>
+<span id="cb4-148"><a href="#cb4-148"></a>  ) <span class="sc">+</span></span>
+<span id="cb4-149"><a href="#cb4-149"></a>  <span class="fu">scale_x_date</span>(</span>
+<span id="cb4-150"><a href="#cb4-150"></a>    <span class="at">breaks =</span> <span class="fu">as.Date</span>(<span class="fu">c</span>(</span>
+<span id="cb4-151"><a href="#cb4-151"></a>      <span class="st">"2026-09-01"</span>,</span>
+<span id="cb4-152"><a href="#cb4-152"></a>      <span class="st">"2026-09-15"</span>,</span>
+<span id="cb4-153"><a href="#cb4-153"></a>      <span class="st">"2026-09-29"</span>,</span>
+<span id="cb4-154"><a href="#cb4-154"></a>      <span class="st">"2026-10-13"</span>,</span>
+<span id="cb4-155"><a href="#cb4-155"></a>      <span class="st">"2026-10-25"</span></span>
+<span id="cb4-156"><a href="#cb4-156"></a>    )),</span>
+<span id="cb4-157"><a href="#cb4-157"></a>    <span class="at">date_labels =</span> <span class="st">"%b %d"</span></span>
+<span id="cb4-158"><a href="#cb4-158"></a>  ) <span class="sc">+</span></span>
+<span id="cb4-159"><a href="#cb4-159"></a>  <span class="fu">scale_y_continuous</span>(</span>
+<span id="cb4-160"><a href="#cb4-160"></a>    <span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">40</span>, <span class="dv">80</span>),</span>
+<span id="cb4-161"><a href="#cb4-161"></a>    <span class="at">breaks =</span> <span class="fu">seq</span>(<span class="dv">40</span>, <span class="dv">80</span>, <span class="dv">10</span>)</span>
+<span id="cb4-162"><a href="#cb4-162"></a>  ) <span class="sc">+</span></span>
+<span id="cb4-163"><a href="#cb4-163"></a> <span class="fu">labs</span>(</span>
+<span id="cb4-164"><a href="#cb4-164"></a>  <span class="at">title =</span> <span class="st">"Leg workouts lasted longest; cardio varied most"</span>,</span>
+<span id="cb4-165"><a href="#cb4-165"></a>  <span class="at">subtitle =</span> <span class="fu">paste</span>(</span>
+<span id="cb4-166"><a href="#cb4-166"></a>    <span class="st">"Total workout duration by session date and workout type."</span>,</span>
+<span id="cb4-167"><a href="#cb4-167"></a>    <span class="st">"September 1–October 25, 2026 | Cardio sessions are tennis."</span>,</span>
+<span id="cb4-168"><a href="#cb4-168"></a>    <span class="at">sep =</span> <span class="st">"</span><span class="sc">\n</span><span class="st">"</span></span>
+<span id="cb4-169"><a href="#cb4-169"></a>  ),</span>
+<span id="cb4-170"><a href="#cb4-170"></a>  <span class="at">x =</span> <span class="st">"Workout date"</span>,</span>
+<span id="cb4-171"><a href="#cb4-171"></a>  <span class="at">y =</span> <span class="st">"Total session duration (minutes)"</span>,</span>
+<span id="cb4-172"><a href="#cb4-172"></a>  <span class="at">color =</span> <span class="st">"Workout type"</span>,</span>
+<span id="cb4-173"><a href="#cb4-173"></a>  <span class="at">caption =</span> <span class="fu">paste</span>(</span>
+<span id="cb4-174"><a href="#cb4-174"></a>    <span class="st">"Joseph Saputra | September–October 2026"</span>,</span>
+<span id="cb4-175"><a href="#cb4-175"></a>    <span class="st">"Source: Workout App Tracker"</span>,</span>
+<span id="cb4-176"><a href="#cb4-176"></a>    <span class="st">"Lines connect recorded sessions of the same type; workouts were not recorded every day."</span>,</span>
+<span id="cb4-177"><a href="#cb4-177"></a>    <span class="at">sep =</span> <span class="st">"</span><span class="sc">\n</span><span class="st">"</span></span>
+<span id="cb4-178"><a href="#cb4-178"></a>  )</span>
+<span id="cb4-179"><a href="#cb4-179"></a>) <span class="sc">+</span></span>
+<span id="cb4-180"><a href="#cb4-180"></a>  <span class="fu">theme_minimal</span>(<span class="at">base_size =</span> <span class="dv">14</span>) <span class="sc">+</span></span>
+<span id="cb4-181"><a href="#cb4-181"></a>  <span class="fu">theme</span>(</span>
+<span id="cb4-182"><a href="#cb4-182"></a>    <span class="at">legend.position =</span> <span class="st">"bottom"</span>,</span>
+<span id="cb4-183"><a href="#cb4-183"></a>    <span class="at">panel.grid.minor =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb4-184"><a href="#cb4-184"></a>    <span class="at">panel.grid.major.x =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb4-185"><a href="#cb4-185"></a>    <span class="at">plot.title =</span> <span class="fu">element_text</span>(</span>
+<span id="cb4-186"><a href="#cb4-186"></a>      <span class="at">face =</span> <span class="st">"bold"</span>,</span>
+<span id="cb4-187"><a href="#cb4-187"></a>      <span class="at">size =</span> <span class="dv">18</span></span>
+<span id="cb4-188"><a href="#cb4-188"></a>    ),</span>
+<span id="cb4-189"><a href="#cb4-189"></a>    <span class="at">plot.subtitle =</span> <span class="fu">element_text</span>(</span>
+<span id="cb4-190"><a href="#cb4-190"></a>      <span class="at">size =</span> <span class="dv">12</span>,</span>
+<span id="cb4-191"><a href="#cb4-191"></a>      <span class="at">margin =</span> <span class="fu">margin</span>(<span class="at">b =</span> <span class="dv">15</span>)</span>
+<span id="cb4-192"><a href="#cb4-192"></a>    ),</span>
+<span id="cb4-193"><a href="#cb4-193"></a>    <span class="at">plot.caption =</span> <span class="fu">element_text</span>(</span>
+<span id="cb4-194"><a href="#cb4-194"></a>      <span class="at">color =</span> <span class="st">"gray45"</span>,</span>
+<span id="cb4-195"><a href="#cb4-195"></a>      <span class="at">hjust =</span> <span class="dv">0</span>,</span>
+<span id="cb4-196"><a href="#cb4-196"></a>      <span class="at">size =</span> <span class="dv">10</span>,</span>
+<span id="cb4-197"><a href="#cb4-197"></a>      <span class="at">margin =</span> <span class="fu">margin</span>(<span class="at">t =</span> <span class="dv">12</span>)</span>
+<span id="cb4-198"><a href="#cb4-198"></a>    )</span>
+<span id="cb4-199"><a href="#cb4-199"></a>  )</span>
+<span id="cb4-200"><a href="#cb4-200"></a></span>
+<span id="cb4-201"><a href="#cb4-201"></a><span class="in">```</span></span>
+<span id="cb4-202"><a href="#cb4-202"></a>The main pattern is a difference between workout types. In this simulated log, leg workouts lasted longest, at around 70 minutes, although only three leg sessions were recorded. Cardio had the largest variation in duration, while push, pull, and shoulder sessions stayed relatively consistent. There was no clear overall increase or decrease from September to October. This suggests that session duration differed more by workout type than by time during this period.</span>
+<span id="cb4-203"><a href="#cb4-203"></a></span>
+<span id="cb4-204"><a href="#cb4-204"></a></span>
+<span id="cb4-205"><a href="#cb4-205"></a></span>
+<span id="cb4-206"><a href="#cb4-206"></a></span>
+<span id="cb4-207"><a href="#cb4-207"></a></span>
+<span id="cb4-208"><a href="#cb4-208"></a></span>
+<span id="cb4-209"><a href="#cb4-209"></a></span>
+<span id="cb4-210"><a href="#cb4-210"></a></span>
+<span id="cb4-211"><a href="#cb4-211"></a></span>
+<span id="cb4-212"><a href="#cb4-212"></a></span>
+<span id="cb4-213"><a href="#cb4-213"></a><span class="fu"># PVJ Final</span></span>
+<span id="cb4-214"><a href="#cb4-214"></a></span>
+<span id="cb4-217"><a href="#cb4-217"></a><span class="in">```{r}</span></span>
+<span id="cb4-218"><a href="#cb4-218"></a><span class="co">#| fig-width: 11</span></span>
+<span id="cb4-219"><a href="#cb4-219"></a><span class="co">#| fig-height: 6.5</span></span>
+<span id="cb4-220"><a href="#cb4-220"></a><span class="co">#| fig-alt: "A line graph of simulated workout durations from September 1 to October 25, 2026. Five colors and line patterns distinguish workout types. Small vertical marks indicate recorded sessions. Leg workouts last longest, around 70 minutes, while cardio durations vary most."</span></span>
+<span id="cb4-221"><a href="#cb4-221"></a></span>
+<span id="cb4-222"><a href="#cb4-222"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb4-223"><a href="#cb4-223"></a></span>
+<span id="cb4-224"><a href="#cb4-224"></a><span class="co"># Load the data</span></span>
+<span id="cb4-225"><a href="#cb4-225"></a>workout_details <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"workout_details.csv"</span>)</span>
+<span id="cb4-226"><a href="#cb4-226"></a></span>
+<span id="cb4-227"><a href="#cb4-227"></a>workout_details<span class="sc">$</span>date <span class="ot">&lt;-</span> <span class="fu">as.Date</span>(workout_details<span class="sc">$</span>date)</span>
+<span id="cb4-228"><a href="#cb4-228"></a></span>
+<span id="cb4-229"><a href="#cb4-229"></a><span class="co"># Put tennis in the Cardio category</span></span>
+<span id="cb4-230"><a href="#cb4-230"></a>workout_details<span class="sc">$</span>workout[</span>
+<span id="cb4-231"><a href="#cb4-231"></a>  workout_details<span class="sc">$</span>exercise <span class="sc">==</span> <span class="st">"Tennis"</span></span>
+<span id="cb4-232"><a href="#cb4-232"></a>] <span class="ot">&lt;-</span> <span class="st">"Cardio"</span></span>
+<span id="cb4-233"><a href="#cb4-233"></a></span>
+<span id="cb4-234"><a href="#cb4-234"></a><span class="co"># Keep one row per workout session</span></span>
+<span id="cb4-235"><a href="#cb4-235"></a>workouts <span class="ot">&lt;-</span> workout_details <span class="sc">%&gt;%</span></span>
+<span id="cb4-236"><a href="#cb4-236"></a>  <span class="fu">distinct</span>(date, workout, session_duration_min)</span>
+<span id="cb4-237"><a href="#cb4-237"></a></span>
+<span id="cb4-238"><a href="#cb4-238"></a><span class="fu">ggplot</span>(</span>
+<span id="cb4-239"><a href="#cb4-239"></a>  workouts,</span>
+<span id="cb4-240"><a href="#cb4-240"></a>  <span class="fu">aes</span>(</span>
+<span id="cb4-241"><a href="#cb4-241"></a>    <span class="at">x =</span> date,</span>
+<span id="cb4-242"><a href="#cb4-242"></a>    <span class="at">y =</span> session_duration_min,</span>
+<span id="cb4-243"><a href="#cb4-243"></a>    <span class="at">color =</span> workout,</span>
+<span id="cb4-244"><a href="#cb4-244"></a>    <span class="at">linetype =</span> workout,</span>
+<span id="cb4-245"><a href="#cb4-245"></a>    <span class="at">group =</span> workout</span>
+<span id="cb4-246"><a href="#cb4-246"></a>  )</span>
+<span id="cb4-247"><a href="#cb4-247"></a>) <span class="sc">+</span></span>
+<span id="cb4-248"><a href="#cb4-248"></a>  <span class="fu">geom_line</span>(<span class="at">linewidth =</span> <span class="fl">0.9</span>) <span class="sc">+</span></span>
+<span id="cb4-249"><a href="#cb4-249"></a></span>
+<span id="cb4-250"><a href="#cb4-250"></a>  <span class="co"># Small vertical marks show recorded sessions without dots</span></span>
+<span id="cb4-251"><a href="#cb4-251"></a>  <span class="fu">geom_point</span>(</span>
+<span id="cb4-252"><a href="#cb4-252"></a>    <span class="at">shape =</span> <span class="dv">124</span>,</span>
+<span id="cb4-253"><a href="#cb4-253"></a>    <span class="at">size =</span> <span class="dv">3</span>,</span>
+<span id="cb4-254"><a href="#cb4-254"></a>    <span class="at">show.legend =</span> <span class="cn">FALSE</span></span>
+<span id="cb4-255"><a href="#cb4-255"></a>  ) <span class="sc">+</span></span>
+<span id="cb4-256"><a href="#cb4-256"></a></span>
+<span id="cb4-257"><a href="#cb4-257"></a>  <span class="fu">scale_color_manual</span>(</span>
+<span id="cb4-258"><a href="#cb4-258"></a>    <span class="at">values =</span> <span class="fu">c</span>(</span>
+<span id="cb4-259"><a href="#cb4-259"></a>      <span class="st">"Push"</span> <span class="ot">=</span> <span class="st">"#D55E00"</span>,</span>
+<span id="cb4-260"><a href="#cb4-260"></a>      <span class="st">"Pull"</span> <span class="ot">=</span> <span class="st">"#0072B2"</span>,</span>
+<span id="cb4-261"><a href="#cb4-261"></a>      <span class="st">"Shoulders"</span> <span class="ot">=</span> <span class="st">"#007A5E"</span>,</span>
+<span id="cb4-262"><a href="#cb4-262"></a>      <span class="st">"Legs"</span> <span class="ot">=</span> <span class="st">"#444444"</span>,</span>
+<span id="cb4-263"><a href="#cb4-263"></a>      <span class="st">"Cardio"</span> <span class="ot">=</span> <span class="st">"#882255"</span></span>
+<span id="cb4-264"><a href="#cb4-264"></a>    )</span>
+<span id="cb4-265"><a href="#cb4-265"></a>  ) <span class="sc">+</span></span>
+<span id="cb4-266"><a href="#cb4-266"></a></span>
+<span id="cb4-267"><a href="#cb4-267"></a>  <span class="co"># Different line patterns help readers distinguish workout types</span></span>
+<span id="cb4-268"><a href="#cb4-268"></a>  <span class="fu">scale_linetype_manual</span>(</span>
+<span id="cb4-269"><a href="#cb4-269"></a>    <span class="at">values =</span> <span class="fu">c</span>(</span>
+<span id="cb4-270"><a href="#cb4-270"></a>      <span class="st">"Push"</span> <span class="ot">=</span> <span class="st">"longdash"</span>,</span>
+<span id="cb4-271"><a href="#cb4-271"></a>      <span class="st">"Pull"</span> <span class="ot">=</span> <span class="st">"dashed"</span>,</span>
+<span id="cb4-272"><a href="#cb4-272"></a>      <span class="st">"Shoulders"</span> <span class="ot">=</span> <span class="st">"twodash"</span>,</span>
+<span id="cb4-273"><a href="#cb4-273"></a>      <span class="st">"Legs"</span> <span class="ot">=</span> <span class="st">"solid"</span>,</span>
+<span id="cb4-274"><a href="#cb4-274"></a>      <span class="st">"Cardio"</span> <span class="ot">=</span> <span class="st">"dotdash"</span></span>
+<span id="cb4-275"><a href="#cb4-275"></a>    )</span>
+<span id="cb4-276"><a href="#cb4-276"></a>  ) <span class="sc">+</span></span>
+<span id="cb4-277"><a href="#cb4-277"></a></span>
+<span id="cb4-278"><a href="#cb4-278"></a>  <span class="co"># Label dates every seven days, starting September 1</span></span>
+<span id="cb4-279"><a href="#cb4-279"></a>  <span class="fu">scale_x_date</span>(</span>
+<span id="cb4-280"><a href="#cb4-280"></a>    <span class="at">breaks =</span> <span class="fu">seq</span>(</span>
+<span id="cb4-281"><a href="#cb4-281"></a>      <span class="fu">as.Date</span>(<span class="st">"2026-09-01"</span>),</span>
+<span id="cb4-282"><a href="#cb4-282"></a>      <span class="fu">as.Date</span>(<span class="st">"2026-10-25"</span>),</span>
+<span id="cb4-283"><a href="#cb4-283"></a>      <span class="at">by =</span> <span class="st">"7 days"</span></span>
+<span id="cb4-284"><a href="#cb4-284"></a>    ),</span>
+<span id="cb4-285"><a href="#cb4-285"></a>    <span class="at">date_labels =</span> <span class="st">"%b %d"</span></span>
+<span id="cb4-286"><a href="#cb4-286"></a>  ) <span class="sc">+</span></span>
+<span id="cb4-287"><a href="#cb4-287"></a></span>
+<span id="cb4-288"><a href="#cb4-288"></a>  <span class="fu">scale_y_continuous</span>(</span>
+<span id="cb4-289"><a href="#cb4-289"></a>    <span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">40</span>, <span class="dv">80</span>),</span>
+<span id="cb4-290"><a href="#cb4-290"></a>    <span class="at">breaks =</span> <span class="fu">seq</span>(<span class="dv">40</span>, <span class="dv">80</span>, <span class="dv">10</span>)</span>
+<span id="cb4-291"><a href="#cb4-291"></a>  ) <span class="sc">+</span></span>
+<span id="cb4-292"><a href="#cb4-292"></a></span>
+<span id="cb4-293"><a href="#cb4-293"></a>  <span class="fu">labs</span>(</span>
+<span id="cb4-294"><a href="#cb4-294"></a>    <span class="at">title =</span> <span class="st">"Workout Session Duration by Type Over Time"</span>,</span>
+<span id="cb4-295"><a href="#cb4-295"></a>    <span class="at">subtitle =</span> <span class="fu">paste</span>(</span>
+<span id="cb4-296"><a href="#cb4-296"></a>      <span class="st">"September 1–October 25, 2026 | Cardio = tennis"</span>,</span>
+<span id="cb4-297"><a href="#cb4-297"></a>      <span class="st">"Vertical marks show recorded sessions; lines connect sessions of the same type."</span>,</span>
+<span id="cb4-298"><a href="#cb4-298"></a>      <span class="at">sep =</span> <span class="st">"</span><span class="sc">\n</span><span class="st">"</span></span>
+<span id="cb4-299"><a href="#cb4-299"></a>    ),</span>
+<span id="cb4-300"><a href="#cb4-300"></a>    <span class="at">x =</span> <span class="st">"Workout date"</span>,</span>
+<span id="cb4-301"><a href="#cb4-301"></a>    <span class="at">y =</span> <span class="st">"Session duration (minutes)"</span>,</span>
+<span id="cb4-302"><a href="#cb4-302"></a>    <span class="at">color =</span> <span class="st">"Workout type"</span>,</span>
+<span id="cb4-303"><a href="#cb4-303"></a>    <span class="at">linetype =</span> <span class="st">"Workout type"</span>,</span>
+<span id="cb4-304"><a href="#cb4-304"></a>    <span class="at">caption =</span> <span class="fu">paste</span>(</span>
+<span id="cb4-305"><a href="#cb4-305"></a>      <span class="st">"Joseph Saputra | September–October 2026"</span>,</span>
+<span id="cb4-306"><a href="#cb4-306"></a>      <span class="st">"Source: Joseph's workout log (simulated data)."</span>,</span>
+<span id="cb4-307"><a href="#cb4-307"></a>      <span class="st">"Connecting lines do not indicate workouts on the days between recorded sessions."</span>,</span>
+<span id="cb4-308"><a href="#cb4-308"></a>      <span class="at">sep =</span> <span class="st">"</span><span class="sc">\n</span><span class="st">"</span></span>
+<span id="cb4-309"><a href="#cb4-309"></a>    )</span>
+<span id="cb4-310"><a href="#cb4-310"></a>  ) <span class="sc">+</span></span>
+<span id="cb4-311"><a href="#cb4-311"></a></span>
+<span id="cb4-312"><a href="#cb4-312"></a>  <span class="fu">theme_classic</span>(<span class="at">base_size =</span> <span class="dv">13</span>) <span class="sc">+</span></span>
+<span id="cb4-313"><a href="#cb4-313"></a></span>
+<span id="cb4-314"><a href="#cb4-314"></a>  <span class="fu">theme</span>(</span>
+<span id="cb4-315"><a href="#cb4-315"></a>    <span class="co"># Light horizontal gridlines help compare durations</span></span>
+<span id="cb4-316"><a href="#cb4-316"></a>    <span class="at">panel.grid.major.y =</span> <span class="fu">element_line</span>(</span>
+<span id="cb4-317"><a href="#cb4-317"></a>      <span class="at">color =</span> <span class="st">"gray90"</span>,</span>
+<span id="cb4-318"><a href="#cb4-318"></a>      <span class="at">linewidth =</span> <span class="fl">0.4</span></span>
+<span id="cb4-319"><a href="#cb4-319"></a>    ),</span>
+<span id="cb4-320"><a href="#cb4-320"></a></span>
+<span id="cb4-321"><a href="#cb4-321"></a>    <span class="at">plot.title =</span> <span class="fu">element_text</span>(</span>
+<span id="cb4-322"><a href="#cb4-322"></a>      <span class="at">face =</span> <span class="st">"bold"</span>,</span>
+<span id="cb4-323"><a href="#cb4-323"></a>      <span class="at">size =</span> <span class="dv">17</span>,</span>
+<span id="cb4-324"><a href="#cb4-324"></a>      <span class="at">color =</span> <span class="st">"gray15"</span></span>
+<span id="cb4-325"><a href="#cb4-325"></a>    ),</span>
+<span id="cb4-326"><a href="#cb4-326"></a></span>
+<span id="cb4-327"><a href="#cb4-327"></a>    <span class="at">plot.subtitle =</span> <span class="fu">element_text</span>(</span>
+<span id="cb4-328"><a href="#cb4-328"></a>      <span class="at">size =</span> <span class="dv">11</span>,</span>
+<span id="cb4-329"><a href="#cb4-329"></a>      <span class="at">color =</span> <span class="st">"gray35"</span>,</span>
+<span id="cb4-330"><a href="#cb4-330"></a>      <span class="at">lineheight =</span> <span class="fl">1.2</span>,</span>
+<span id="cb4-331"><a href="#cb4-331"></a>      <span class="at">margin =</span> <span class="fu">margin</span>(<span class="at">b =</span> <span class="dv">15</span>)</span>
+<span id="cb4-332"><a href="#cb4-332"></a>    ),</span>
+<span id="cb4-333"><a href="#cb4-333"></a></span>
+<span id="cb4-334"><a href="#cb4-334"></a>    <span class="at">axis.text =</span> <span class="fu">element_text</span>(</span>
+<span id="cb4-335"><a href="#cb4-335"></a>      <span class="at">color =</span> <span class="st">"gray30"</span></span>
+<span id="cb4-336"><a href="#cb4-336"></a>    ),</span>
+<span id="cb4-337"><a href="#cb4-337"></a></span>
+<span id="cb4-338"><a href="#cb4-338"></a>    <span class="at">axis.title.x =</span> <span class="fu">element_text</span>(</span>
+<span id="cb4-339"><a href="#cb4-339"></a>      <span class="at">margin =</span> <span class="fu">margin</span>(<span class="at">t =</span> <span class="dv">10</span>)</span>
+<span id="cb4-340"><a href="#cb4-340"></a>    ),</span>
+<span id="cb4-341"><a href="#cb4-341"></a></span>
+<span id="cb4-342"><a href="#cb4-342"></a>    <span class="at">axis.title.y =</span> <span class="fu">element_text</span>(</span>
+<span id="cb4-343"><a href="#cb4-343"></a>      <span class="at">margin =</span> <span class="fu">margin</span>(<span class="at">r =</span> <span class="dv">10</span>)</span>
+<span id="cb4-344"><a href="#cb4-344"></a>    ),</span>
+<span id="cb4-345"><a href="#cb4-345"></a></span>
+<span id="cb4-346"><a href="#cb4-346"></a>    <span class="at">legend.position =</span> <span class="st">"bottom"</span>,</span>
+<span id="cb4-347"><a href="#cb4-347"></a>    <span class="at">legend.key.width =</span> grid<span class="sc">::</span><span class="fu">unit</span>(<span class="fl">1.4</span>, <span class="st">"cm"</span>),</span>
+<span id="cb4-348"><a href="#cb4-348"></a>    <span class="at">legend.text =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">11</span>),</span>
+<span id="cb4-349"><a href="#cb4-349"></a>    <span class="at">legend.title =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">11</span>),</span>
+<span id="cb4-350"><a href="#cb4-350"></a></span>
+<span id="cb4-351"><a href="#cb4-351"></a>    <span class="at">plot.caption =</span> <span class="fu">element_text</span>(</span>
+<span id="cb4-352"><a href="#cb4-352"></a>      <span class="at">color =</span> <span class="st">"gray45"</span>,</span>
+<span id="cb4-353"><a href="#cb4-353"></a>      <span class="at">hjust =</span> <span class="dv">0</span>,</span>
+<span id="cb4-354"><a href="#cb4-354"></a>      <span class="at">size =</span> <span class="dv">10</span>,</span>
+<span id="cb4-355"><a href="#cb4-355"></a>      <span class="at">lineheight =</span> <span class="fl">1.2</span>,</span>
+<span id="cb4-356"><a href="#cb4-356"></a>      <span class="at">margin =</span> <span class="fu">margin</span>(<span class="at">t =</span> <span class="dv">12</span>)</span>
+<span id="cb4-357"><a href="#cb4-357"></a>    ),</span>
+<span id="cb4-358"><a href="#cb4-358"></a></span>
+<span id="cb4-359"><a href="#cb4-359"></a>    <span class="at">plot.margin =</span> <span class="fu">margin</span>(<span class="dv">15</span>, <span class="dv">20</span>, <span class="dv">15</span>, <span class="dv">15</span>)</span>
+<span id="cb4-360"><a href="#cb4-360"></a>  )</span>
+<span id="cb4-361"><a href="#cb4-361"></a><span class="in">```</span></span>
+<span id="cb4-362"><a href="#cb4-362"></a>In this simulated workout log, leg sessions lasted longest, at around 68–72 minutes, although only three sessions were recorded. Cardio varied most, ranging from about 45 to 60 minutes, while push, pull, and shoulder sessions remained relatively consistent. The different line patterns make these comparisons easier to follow, and vertical marks identify individual recorded sessions. Overall, there was no clear upward or downward trend from September to October; the clearest pattern was the difference in duration between workout types.</span>
 </code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
